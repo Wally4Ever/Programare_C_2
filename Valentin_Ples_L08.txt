@@ -1,0 +1,914 @@
+
+/*Implement a C++ application that defines the class called CurrentHour with hour, minute, second as
+private attributes. The class has public setter/getter methods for each attribute. Add a friend function that
+copies the content of a CurrentHour object used as parameter into another instance of the class that will be
+returned by the function, hour being modified to Greenwich Mean Time. Use the computer local current
+time
+gr 2012*/
+
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <iostream>
+#include <ctime>
+
+using namespace std;
+
+class CurrentHour 
+{
+        int hour, min, sec;
+public:
+        void set(int o, int m, int s);
+
+        int getHour() {
+                return hour;
+        }
+        int getMin() {
+                return min;
+        }
+        int getSec() {
+                return sec;
+        }
+
+        friend CurrentHour copy(CurrentHour);
+};
+
+void CurrentHour::set(int o, int m, int s) 
+{
+        hour = o;
+        min = m;
+        sec = s;
+}
+
+CurrentHour copy(CurrentHour ob2) 
+{
+        CurrentHour ob1;
+        ob1.hour = ob2.hour;
+        ob1.min = ob2.min;
+        ob1.sec = ob2.sec;
+        return ob1;
+}
+
+
+int main() 
+{
+        CurrentHour ob1, ob2;
+
+        time_t t = time(NULL), curr_time = time(NULL);
+
+        tm* timePtr = localtime(&t);
+
+        cout << "The first object is: ";
+        ob1.set(timePtr->tm_hour, timePtr->tm_min, timePtr->tm_sec);
+        cout << "\nThe time is: \n" << ob1.getHour() << " : " << ob1.getMin() << " : " << ob1.getSec() << " seconds ";
+
+        tm* tm_gmt = gmtime(&curr_time);
+        ob2.set(tm_gmt->tm_hour, tm_gmt->tm_min, tm_gmt->tm_sec);
+        ob1 = copy(ob2);
+        cout << "\n\nThe same object after copy: ";
+        cout << "\nThe time is: \n" << ob1.getHour() << " : " << ob1.getMin() << " : " << ob1.getSec() << " seconds ";
+
+        return 0;
+}
+﻿/*Write a C++ application in which the class Calculator has a private attribute called RAM_memory (int) 
+and a friend function named service_technician( ) that can modify the attribute’s value. The friend
+function will be member in the class Motherboard, that encapsulates the processor_type variable (string of 
+characters). Write the code that allows the modifying of the processor_type’s value and the RAM_memory 
+from the friend function.*/
+
+/*Scrieţi o aplicaţie C/C++ în care clasa Calculator are un atribut privat memorie_RAM (int) şi o funcție prietenă 
+tehnician_service( ) care permite modificarea valorii acestui atribut. Functia friend va fi membra intr-o alta 
+clasa, Placa_de_baza care are o componentă denumire_procesor (sir de caractere). Scrieţi codul necesar care 
+permite funcției prietene tehnician_service( ) să modifice (schimbe) valoarea variabilei denumire_procesor si 
+memorie _RAM.*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+using namespace std;
+class Motherboard
+{
+        char processor[6];
+public:
+        Motherboard()
+        {
+                strcpy(processor, "AMD");
+        }
+        void setProcessor(char* x) 
+        {
+                strcpy(processor, x);
+        }
+        char* getProcessor() 
+        {
+                return processor;
+        }
+};
+
+class Calculator
+{
+        int ram;
+        Motherboard o;
+public:
+        Calculator()
+        {
+                ram = 8;
+        }
+        int getRam()
+        {
+                return ram;
+        }
+        friend Calculator tech(Calculator, Motherboard);
+};
+Calculator tech(Calculator c, Motherboard o) 
+{
+        Calculator n_r;
+        c.ram = 16;
+        char t[10];
+        cout << "\nProcessor name: ";
+        cin >> t;
+        o.setProcessor(t);
+        cout << "\nVal ram = " << c.ram;
+        cin.get();
+        cout << "\nProcesor: " << o.getProcessor();
+        n_r.ram = c.ram;
+        return n_r;
+}
+int main()
+{
+        Calculator oc, n_oc;
+        Motherboard mb;
+
+        cout <<"RAM: "<< oc.getRam();
+        cout <<"\nProcesor:"<< mb.getProcessor();
+        n_oc = tech(oc, mb);
+        cout << "\nNew RAM is:"<< n_oc.getRam();
+}
+
+/*Define a class called Repo that has 2 integer private variables. The class contains an empty 
+constructor and another one with 2 parameters. An accesor method that displays the variables values is 
+also included in the class. Write another class called Math which is friend to the first one. This 
+class contains the implementation of the elementary arithmetical operations (+, -, *, /) applied to the 
+values stored in the first class. Each arithmetical method receives as parameter an object instantiated from 
+the first class.*/
+#include<iostream>
+
+using namespace std;
+
+class Math;
+
+class Repo 
+{
+        int x;
+        int y;
+public:
+        Repo()
+        {
+                x = 0;
+                y = 0;
+        };
+
+        Repo(int a, int b)
+        {
+                x = a;
+                y = b;
+        }
+
+        int getX() 
+        {
+                return x;
+        }
+
+        int getY() 
+        {
+                return y;
+        }
+
+        void display()
+        {
+                cout << "\nThe numbers are: " << getX() << " si " << getY();
+        }
+
+        friend Math;
+};
+
+class Math 
+{
+public:
+        Math() {};
+        int add(Repo ob)
+        {
+                return ob.x + ob.y;
+        }
+        int substract(Repo ob)
+        {
+                return ob.x - ob.y;
+        }
+        int multiply(Repo ob)
+        { 
+                return ob.x * ob.y; 
+        }
+        float divide(Repo ob)
+        {
+                if (ob.y != 0)
+                        return (float)ob.x / ob.y;
+                else {
+                        cout << "\nIt can't be divided by 0!";
+                        return 0;
+                }
+        }
+}; 
+
+int main() 
+{
+        int a, b;
+        Math m;
+        cout << "First number: ";
+        cin >> a;
+        cout << "Second number: ";
+        cin >> b;
+        Repo ob(a, b);
+        ob.display();
+
+        cout << "\nSum: " << m.add(ob);
+        cout << "\nDiff: " << m.substract(ob);
+        cout << "\nProduct: " << m.multiply(ob);
+        if (m.divide(ob) != 0)
+                cout << "\nDivision: " << m.divide(ob) << "\n";
+
+        return 0;
+}
+/*Write a C++ application that stores inside a class a public static integer variable called var_static. The
+variable is incremented each time the class's constructor is called. After instantiating several objects,
+display their number using the value of the static variable.*/
+#include <iostream>
+using namespace std;
+class HeHe
+{
+        int x;
+public:
+        static int var_static; 
+        HeHe(int v) 
+        {
+                cout << "\nConstructor cu valoarea: " << v << endl;
+                x = v;
+                var_static++;
+        }
+        int getX() 
+        {
+                return x;
+        }
+        ~HeHe() 
+        {
+                cout << "\nApel destructor: var_static = " << var_static << endl;
+                var_static--;
+        }
+};
+int HeHe::var_static; 
+int main() 
+{
+        cout << "Acces prin numele clasei: var_static = " << HeHe::var_static << endl;
+        HeHe a(3);
+        cout << "Date membre: " << "x = " << a.getX() << ", var_static = " << HeHe::var_static << endl;
+        cout << "\nAcces prin obiectul a: var_static = " << a.var_static << endl;
+        HeHe b(5);
+        cout << "Date membre: " << "x = " << b.getX() << ", var_static = " << b.var_static << endl;
+        cout << "\nAcces prin numele clasei: var_static = " << HeHe::var_static << endl;
+        HeHe c(11);
+        cout << "Date membre: " << "x = " << b.getX() << ", var_static = " << b.var_static << endl;
+        cout << "\nAcces prin numele clasei: var_static = " << HeHe::var_static << endl;
+        return 0;
+}
+/*Implement the 4-th problem by changing the static variable's access modifier to private. Define a method
+that returns the counter's value. Analyze the case if the getter method is static or non-static and the way it
+is called.*/
+#include <iostream>
+using namespace std;
+class HeHe
+{
+        int x;
+        static int var_static;
+public:
+
+        HeHe(int v)
+        {
+                cout << "\nConstructor cu valoarea: " << v << endl;
+                x = v;
+                var_static++;
+        }
+        int getX()
+        {
+                return x;
+        }
+        static int getStat()
+        {
+                return var_static;
+        }
+        ~HeHe()
+        {
+                cout << "\nApel destructor: var_static = " << var_static << endl;
+                var_static--;
+        }
+};
+int HeHe::var_static;
+int main()
+{
+        cout << "Acces prin numele clasei: var_static = " << HeHe::getStat() << endl;
+        HeHe a(3);
+        cout << "Date membre: " << "x = " << a.getX() << ", var_static = " << HeHe::getStat() << endl;
+        cout << "\nAcces prin obiectul a: var_static = " << a.getStat() << endl;
+        HeHe b(5);
+        cout << "Date membre: " << "x = " << b.getX() << ", var_static = " << HeHe::getStat() << endl;
+        cout << "\nAcces prin numele clasei: var_static = " << b.getStat() << endl;
+        HeHe c(11);
+        cout << "Date membre: " << "x = " << c.getX() << ", var_static = " << HeHe::getStat() << endl;
+        cout << "\nAcces prin numele clasei: var_static = " << c.getStat() << endl;
+        return 0;
+}
+/*Write a C++ application that defines a class named Point with the private attributes x and y. Implement a
+friend function that calculate the area and perimeter of different shapes objects defined by two Point
+parameters P0(x0, y0) and P1(x1, y1). Introduce another parameter named shape that controls the way the
+two points are used. If we consider a circle, the points delimit the circle's diameter (shape=1). If we are
+dealing with a right triangle (shape=2), the points determine the hypotenuse, and the other sides are
+determined considering the 2 initial points. The point's coordinates and the shape selection will be realized
+using parameters introduced from KB.*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+using namespace std;
+
+class Point
+{
+        int x;
+        int y;
+public:
+        void setX(int x)
+        {
+                this->x = x;
+        }
+        void setY(int y)
+        {
+                this->y = y;
+        }
+        int getX()
+        {
+                return this->x;
+        }
+        int getY()
+        {
+                return this->y;
+        }
+        friend double perimetru(Point, Point, int);
+        friend double surface(Point, Point, int);
+        
+        
+};
+double length(Point, Point);
+
+int main()
+{
+        Point p1, p2;
+        p1.setX(5);
+        p1.setY(8);
+        p2.setX(0);
+        p2.setY(4);
+        cout << length(p1, p2);
+        cout << perimetru(p1, p2, 1);
+        cout << surface(p1, p2, 1);
+        cout << perimetru(p1, p2, 2);
+        cout << surface(p1, p2, 2);
+        cout << surface(p1, p2, 3);
+
+}
+double length(Point p1, Point p2)
+{
+        int x = p2.getX() - p1.getX();
+        int y = p2.getY() - p1.getY();
+        return sqrt(pow(x, 2) + pow(y, 2));
+}
+double perimetru(Point p1, Point p2, int shape)
+{
+        double len = length(p1, p2);
+        if (shape == 1)
+        {
+                cout << "\nCERC\n";
+                return 3.14*len;
+        }
+        if (shape == 2)
+        {
+                cout << "\nTRIUNGHI\n";
+                int c1 = p2.x - p1.x;
+                int c2 = p2.y - p1.y;
+                return abs(len + c1 + c2);
+        }
+        cout << "\n\nFORMA INCORECTA!";
+        return -1;
+
+}
+double surface(Point p1, Point p2, int shape)
+{
+        double len = length(p1, p2);
+        if (shape == 1)
+        {
+                cout << "\nCERC\n";
+                return 3.14 * pow(len/2, 2);
+        }
+        if (shape == 2)
+        {
+                cout << "\nTRIUNGHI\n";
+                int c1 = p2.x - p1.x;
+                int c2 = p2.y - p1.y;
+                return abs(c1*c2/2);
+        }
+        cout << "\nFORMA INCORECTA!";
+        return -1;
+}
+/*A kiosk sells newspapers, magazines and books. Each publication has a name, an editorial house, a
+number of pages, the number of copies and a price (no VAT). Write the class that models the publications.
+Introduce a static member named VAT (percentage) and a static method that modifies the value of
+this variable. Determine the total income and the average price per page for each publication type.*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+
+using namespace std;
+
+
+class Publication 
+{
+private:
+        char* name;
+        char* edit;
+        int page;
+        int copy;
+        int price;
+        static int VAT;
+public:
+        Publication() {
+                name = new char[50];
+                edit = new char[50];
+        }
+        static void setVAT(int x){
+                VAT = x;
+        }
+        void setName(char* nume) {
+                strcpy(name, nume);
+        }
+
+        void setedit(char* nume) {
+                strcpy(edit, nume);
+        }
+
+        void setpage(int pagini) {
+                page = pagini;
+        }
+
+        void setcopy(int copii) {
+                copy = copii;
+        }
+        void setPrice(int pret) {
+                price = pret;
+        }
+        static int getVAT() {
+                return VAT;
+        }
+        int getPrice() {
+                return price;
+        }
+
+        int getcopy() {
+                return copy;
+        }
+
+        int getpage() {
+                return page;
+        }
+
+        char* getName() {
+                return name;
+        }
+
+        char* getEdit() {
+                return edit;
+        }
+
+        ~Publication()
+        {
+                delete[]name;
+                delete[]edit;
+        }
+};
+int Publication::VAT;
+void display(float* income, int n, Publication* kiosk);
+void read(float* income, int n, Publication* kiosk);
+void incomeCalc(float* income, int n, Publication* kiosk);
+
+int main() 
+{
+        int n;
+        int tax;
+        cout << "Number of publications: ";
+        cin >> n;
+        cout << "Percentage of tax: ";
+        cin >> tax;
+        Publication* kiosk = new Publication[n];
+        float* income = new float[n];
+        kiosk[0].setVAT(tax);
+        read(income, n, kiosk);
+        incomeCalc(income, n, kiosk);
+        display(income, n, kiosk);
+
+        delete[]kiosk;
+        delete[]income;
+        return 0; 
+}
+
+void display(float* income, int n, Publication* kiosk) 
+{
+        for (int i = 0; i < n; i++) 
+        {
+                cout << "\nThe incomes for each publications are: \n";
+                cout << "Name: " << kiosk[i].getName() << endl;
+                cout << "Editorial house: " << kiosk[i].getEdit() << endl;
+                cout << "Total income: " << income[i] << endl;
+                cout << "Average income per page: " << income[i] / kiosk[i].getpage();
+        }
+}
+void read(float* income, int n, Publication* kiosk) 
+{
+        char* name, * edit;
+        int copy, price, page;
+        for (int i = 0; i < n; i++) 
+        {
+
+                name = new char[50];
+                edit = new char[50];
+                cout << "\nPublication " << i + 1 << endl;
+
+                cout << "Name: ";
+                cin >> name;
+                kiosk[i].setName(name);
+
+                cout << "Name of the editorial house: ";
+                cin >> edit;
+                kiosk[i].setedit(edit);
+
+                cout << "Number of pages: ";
+                cin >> page;
+                kiosk[i].setpage(page);
+
+                cout << "Number of copies: ";
+                cin >> copy;
+                kiosk[i].setcopy(copy);
+
+                cout << "Price per copy: ";
+                cin >> price;
+                kiosk[i].setPrice(price);
+        }
+}
+
+void incomeCalc(float* income, int n, Publication* kiosk) 
+{
+        for (int i = 0; i < n; i++) 
+        {
+                income[i] = kiosk[i].getPrice() * kiosk[i].getcopy();
+                income[i] += (kiosk[i].getVAT() * income[i]) / 100;
+        }
+}
+
+/*Consider the Fraction class that has two private integer attributes a and b for the denominator and 
+nominator. Use two setter and getter methods for all the class's attributes. Declare a friend function named
+simplify( ) that receives as parameter a Fraction object and returns the corresponding simplified object. 
+Consider a private static integer variable icount that will be initialized with 0 and incremented in the 
+class's constructors. Define an explicit constructor without parameters that initializes a with 0 and b with 
+1 and another explicit constructor with two integer parameters. For this constructor is verified if b!=0 
+before to be called. Define an explicit destructor that displays and decrements the value of icount. Define a 
+friend function f_add_fraction(...) that returns an object reflecting the sum of the objects received as 
+parameters. Implement similar functions for fractions subtraction, multiplication and division. Instantiate 
+two Fraction objects and read the appropriate data from the keyboard. Display the initial attributes and the 
+ones obtained after simplifying. Call the implemented friend functions and store the results into another 
+different four objects. Display the results and the objects counter using the corresponding accesor 
+methods.*/
+#include <iostream>
+using namespace std;
+
+class Fraction
+{
+    int a;
+    int b;
+public:
+    static int icount;
+    Fraction()
+    {
+        cout << "\nConstuctor vid";
+        a = 0;
+        b = 1;
+        icount++;
+    }
+    Fraction(int a, int b)
+    {
+        if (b == 0)
+        {
+            cout << "FRACTIE IMPOSIBILA!";
+            exit(1);
+        }
+        this->a = a;
+        this->b = b;
+        icount++;
+    }
+    ~Fraction()
+    {
+        cout << "\nDESTRUCTOR";
+        icount--;
+    }
+
+    void setA(int a)
+    {
+        this->a = a;
+    }
+    void setB(int b)
+    {
+        if (b == 0)
+        {
+            cout << "FRACTIE IMPOSIBILA!";
+            exit(1);
+        }
+        this->b = b;
+    }
+    int getA()
+    {
+        return a;
+    }
+    int getB()
+    {
+        return b;
+    }
+
+    int CMMDC()
+    {
+        int a1 = a;
+        int b1 = b;
+        int r = a1 % b1;
+        while (r)
+        {
+            a1 = b1;
+            b1 = r;
+            r = a1 % b1;
+        }
+        return b1;
+    }
+    Fraction simplify()
+    {
+        Fraction rez(a, b);
+        int div;
+        do
+        {
+            div = rez.CMMDC();
+            rez.a /= div;
+            rez.b /= div;
+        } while (div != 1);
+        return rez;
+    }
+    friend Fraction add_fraction(Fraction f1, Fraction f2);
+    friend Fraction subtract_fraction(Fraction f1, Fraction f2);
+    friend Fraction multiply_fraction(Fraction f1, Fraction f2);
+    friend Fraction divide_fraction(Fraction f1, Fraction f2);
+};
+
+int Fraction::icount;
+
+Fraction divide_fraction(Fraction f1, Fraction f2)
+{
+    Fraction rez;
+    //multiply with reciprocal
+    rez.b = f1.b * f2.a;
+    rez.a = f1.a * f2.b;
+    return rez;
+}
+Fraction multiply_fraction(Fraction f1, Fraction f2)
+{
+    Fraction rez;
+    rez.b = f1.b * f2.b;
+    rez.a = f1.a * f2.a;
+    return rez;
+
+}
+Fraction subtract_fraction(Fraction f1, Fraction f2)
+{
+    Fraction rez;
+    rez.b = f1.b * f2.b;
+    rez.a = f1.a * f2.b - f2.a * f1.b;
+    return rez;
+}
+Fraction add_fraction(Fraction f1, Fraction f2)
+{
+    Fraction rez;
+    rez.b = f1.b * f2.b;
+    rez.a = f1.a * f2.b + f2.a * f1.b;
+    return rez;
+
+}
+int main()
+{
+    Fraction f1(14, 35);
+    cout << "\nNumar obiecte fractie: " << Fraction::icount;
+
+    cout <<'\n'<< f1.CMMDC();
+    Fraction f2 = f1.simplify();
+
+    Fraction sum = add_fraction(f1, f2);
+   
+
+    cout << '\n' << f1.getA() << '/' << f1.getB();
+    cout << "\n" << f2.getA() << '/' << f2.getB();
+
+    cout << "\nAdunare: " << sum.getA() << '/' << sum.getB();
+    sum = subtract_fraction(f1, f2);
+    cout << "\nScadere: " << sum.getA() << '/' << sum.getB();
+    sum = multiply_fraction(f1, f2);
+    cout << "\nInmultire: " << sum.getA() << '/' << sum.getB();
+    sum = divide_fraction(f1, f2);
+    cout << "\nImpartire: " << sum.getA() << '/' << sum.getB();
+    return 0;
+}
+/*Consider the CNP management problem from a previous laboratory where you fully validate the CNP
+(correct day based on the correct month and the correct year, including the leap years) in which you enter
+more than one data of Person type in a loop with confirmation, showing at the end how many objects have
+the correct data entered. Use private static attributes as counters.*/
+
+#include <iostream>
+#include <time.h>
+
+using namespace std;
+
+const int dim_sir = 24;
+
+class Person 
+{
+private:
+        char nume[dim_sir];
+        char prenume[dim_sir];
+        char cnp[14];
+public:
+        static int contor;
+
+        void setNume(char* n)
+        {
+                if (n != 0)
+                        strncpy_s(nume, n, dim_sir - 1);
+                else
+                        strcpy_s(nume, "Necunoscut");
+        }
+        void setPrenume(char* p)
+        {
+                if (p != 0)
+                        strncpy_s(prenume, p, dim_sir - 1);
+                else
+                        strcpy_s(prenume, "Necunoscut");
+        }
+        
+        void setValidCnp(char* c);
+
+        char* getNume(void) {
+                return nume;
+        }
+        static int getStatic() {
+                return contor;
+        }
+        char* getPrenume(void) {
+                return prenume;
+        }
+        char* getCnp(void) {
+                return cnp;
+        }
+        
+        char getSex(void);
+        int getAn(void);
+        int getLuna(void);
+        int getZi(void);
+        int getVarsta(void);
+};
+
+int Person::contor;
+
+
+
+void Person::setValidCnp(char* c) 
+{
+        char buf[3];
+        int n;
+        if (c != 0) 
+        {
+                // validare CNP: numai pentru cifra gen, cifrele pentru AN, LU, ZI
+                if (strlen(c) != 13)//lungime cnp
+                {
+                        cout << "CNP INVALID! (length)";
+                        exit(1);
+                }
+                if (c[0] != '5' && c[0] != '6')//cod cnp
+                {
+                        cout << "CNP INVALID! (gender)";
+                        exit(1);
+                }
+                strncpy_s(buf, c + 1, 2);//an
+                buf[2] = '\0';
+                n = atoi(buf);
+                if (n > 99)
+                {
+                        cout << "CNP INVALID!(year)";
+                        exit(1);
+                }
+                strncpy_s(buf, c + 3, 2);//luna
+                buf[2] = '\0';
+                n = atoi(buf);
+                if (n == 0 || n > 12)
+                {
+                        cout << "CNP INVALID!(month)";
+                        exit(1);
+                }
+                strncpy_s(buf, c + 5, 2);//zi
+                buf[2] = '\0';
+                n = atoi(buf);
+                if (n == 0 || n > 31)
+                {
+                        cout << "CNP INVALID! (day)";
+                        exit(1);
+                }
+                strcpy_s(cnp, c);//copiere sir c valid in cnp
+                contor++;
+        }
+}
+char Person::getSex(void) 
+{
+        if (cnp[0] == '1') return 'M';
+        if (cnp[0] == '2') return 'F';
+        return 'X';
+}
+
+int Person::getAn(void) 
+{
+        char buf[3];
+        strncpy_s(buf, cnp + 1, 2);
+        buf[2] = '\0';
+        return(1900 + atoi(buf));
+}
+
+int Person::getLuna(void) 
+{
+        char buf[3];
+        strncpy_s(buf, cnp + 3, 2);
+        buf[2] = '\0';
+        return(atoi(buf));
+}
+
+int Person::getZi(void) 
+{
+        return((cnp[5] - '0') * 10 + (cnp[6] - '0'));
+}
+int Person::getVarsta(void) 
+{
+        struct tm newTime;
+        time_t szClock;
+        time(&szClock);
+        localtime_s(&newTime, &szClock);
+        int an_c = 1900 + newTime.tm_year;
+        int an_n = getAn();
+        int n = an_c - an_n;
+        int lu_c = newTime.tm_mon + 1;
+        int lu_n = getLuna();
+        if (lu_c < lu_n)
+                n--;
+        else 
+        {
+                if (lu_c == lu_n) 
+                {
+                        int zi_c = newTime.tm_mday;
+                        int zi_n = getZi();
+                        if (zi_c < zi_n)
+                                n--;
+                }
+        }
+        return n;
+}
+int main() 
+{
+        int n;
+        cout << "Number of people: ";
+        cin >> n;
+        Person* p = new Person[n];
+        char aux_string[dim_sir];
+        for (int i = 0; i < n; i++) 
+        {
+                cout << "\nLast Name: ";
+                cin >> aux_string;
+                p[i].setNume(aux_string);
+                cin.ignore();
+                cout << "First name: ";
+
+                gets_s(aux_string, dim_sir);
+                p[i].setPrenume(aux_string);
+                cout << "CNP: ";
+                cin >> aux_string;
+        }
+        for (int i = 0; i < n; i++) 
+        {
+                p[i].setValidCnp(aux_string);
+        }
+        cout << "There are: " << p[n - 1].getStatic() << " with valid cnp";
+
+        return 0;
+}

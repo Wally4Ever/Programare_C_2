@@ -1,0 +1,824 @@
+
+﻿#define _CRT_SECURE_NO_WARNINGS
+#define MAX 30
+#include <iostream>
+#include <string.h>
+using namespace std;
+/*PilotF1. Clasa definește
+variabilele private nume (șir de caractere), echipa (șir de caractere), varsta (int), record (int),
+nr_pole_Nr_poleition (int). Ca membri publici, clasa conține metode accesor/getter și
+mutator/setter distincte pentru fiecare din atributele clasei.
+In funcția main( ), să se creeze 3 instanțe distincte ale clasei PilotF1 și să se folosească
+metodele mutator/setter pentru a inițializa datele din fiecare obiect cu informația
+corespunzătoare citită de la tastatură. Folosind metodele accesor/getter, să se afișeze toate
+datele pilotului cu cel mai bun record
+gr 2012*/
+class PilotF1
+{
+    char nume[MAX];
+    char echipa[MAX];
+    int varsta;
+    int record;
+    int nr_pole;
+public:
+    PilotF1()
+    {
+        strcpy_s(this->nume, "Input Nume");
+        strcpy_s(this->echipa, "Input Echipa");
+        this->nr_pole = 0;
+        this->record = 0;
+        this->varsta = 0;
+    }
+    char* getNume()
+    {
+        return nume;
+    }
+    char* getEchipa()
+    {
+        return echipa;
+    }
+    int getVarsta()
+    {
+        return varsta;
+    }
+    int getRecord()
+    {
+        return record;
+    }
+    int getNr_pole()
+    {
+        return nr_pole;
+    }
+    void setNume(char nume[])
+    {
+        strcpy_s(this->nume, nume);
+    }
+    void setEchipa(char echipa[])
+    {
+        strcpy_s(this->echipa, echipa);
+    }
+    void setVarsta(int varsta)
+    {
+        if (varsta>=18)
+            this->varsta = varsta;
+        else
+        {
+            cout << "Varsta invalida!";
+            exit(0);
+        }
+    }
+    void setRecord(int record)
+    {
+        this->record = record;
+    }
+    void setNr_pole(int nr_pole)
+    {
+        this->nr_pole = nr_pole;
+    }
+};
+
+void read(class PilotF1*, int);
+int best(class PilotF1*, int);
+void display(class PilotF1);
+
+int main()
+{
+    int n = 3;
+    cout << "There will be 3 pilots\n";
+    PilotF1* sir = new PilotF1[n];
+    read(sir, n);
+    int record = best(sir, n);
+    cout << "\nBest time was: " << ' ' << record;
+
+    for (int i = 0; i < n; i++) 
+    {
+        if (sir[i].getRecord() == record) 
+        {
+            cout << "\nThis driver did the best time: \n" << endl;
+            display(sir[i]);
+            break;
+        }
+    }
+    return 0;
+}
+void read(class PilotF1* sir, int n) 
+{
+    char xNume[MAX];
+    char xEchipa[MAX];
+    int xVarsta;
+    int xTime;
+    int xNr_pole;
+    for (int i = 0; i < n; i++) 
+    {
+        cout << "\nNume: ";
+        cin >> xNume;
+        sir[i].setNume(xNume);
+
+        cout << "Echipa: ";
+        cin >> xEchipa;
+        sir[i].setEchipa(xEchipa);
+
+        cout << "Varsta: ";
+        cin >> xVarsta;
+        sir[i].setVarsta(xVarsta);
+
+        cout << "Record: ";
+        cin >> xTime;
+        sir[i].setRecord(xTime);
+
+        cout << "Numar pole Nr_poleition: ";
+        cin >> xNr_pole;
+        sir[i].setNr_pole(xNr_pole);
+    }
+}
+int best(PilotF1* sir, int n) 
+{
+    int best = INT_MAX;
+    for (int i = 0; i < n; i++) 
+    {
+        if (sir[i].getRecord() < best) 
+            best = sir[i].getRecord();
+    }
+    return best;
+}
+
+void display(class PilotF1 sofer) 
+{
+    cout << "\nNume: " << sofer.getNume();
+    cout << "\nEchipa: " << sofer.getEchipa();
+    cout << "\nVarsta: " << sofer.getVarsta();
+    cout << "\nPole Nr_poleition: " << sofer.getNr_pole();
+}
+﻿/*Să se modifice exemplul 2 astfel încât codul să poată fi lansat în execuție considerand 
+atributul clasei private si metode public get/set adecvate. In main() instantiati un obiect din 
+clasa care va fi modificat si apoi accesat, afisand rezultatul.
+gr 2012*/
+/*ilustrarea modului implicit de alocare a specificatorilor de vizibilitate*/
+#include <iostream>
+using namespace std;
+class Test2 
+{
+        int x;
+public:
+        Test2() 
+        {
+                x = 0;
+                cout << "\nApel constructor explicit vid.";
+        }
+        void setX(int x) 
+        {
+                this->x = x;
+        }
+        int getX()
+        {
+                return x;
+        }
+};
+int main() 
+{
+        Test2 ob1; //instantiere imposibila, constructorul este privat!
+        int a;
+        cout << "\nIntroduceti valoarea variabilei de tip \"int\" din clasa: ";
+        cin >> a;
+        //incercare (imposibila) de initializare a variabilei din clasa
+        //ob1.x = a;
+        ob1.setX(a);
+        cout << ob1.getX();
+        return 0;
+}
+
+﻿/*atribute private
+matricea data printr-un pointer dublu pentru a aloca un tablou de pointeri catre liniile matricii 
+si doua atribute private de tip int pentru numarul de linii si coloane. 
+Constructorul cu doi parametrii va aloca dinamic spatiu 
+pentru matrice initializand elementele cu 0. Implementati un destructor explicit pentru a 
+elibera spatiul alocat. Definiti void setElement(int l, int c, int v) care va seta 
+un element cu valoarea v, de pe linia l si coloana c. 
+Declarati o functie globala void
+readMatrix(Matrix m) care va citi elementele matricii de la 
+tastatura (va folosi si metoda publica setElement())
+- afișarea elementelor de pe diagonala secundara a matricei, dacă matricea este pătratică; în 
+caz contrar se afișează un mesaj corespunzător;
+- afișarea elementelor de sub diagonala principala;
+*/
+#include <iostream>
+using namespace std;
+const int Max1 = 10;
+const int Max2 = 10;
+
+class Matrix 
+{
+        int** matrix=NULL;
+        int dim1, dim2;
+public:
+        Matrix(int dim1, int dim2) 
+        {
+                this->dim1 = dim1;
+                this->dim2 = dim2;
+                matrix = new int* [dim1];
+                for (int i = 0; i < dim1; ++i)
+                        matrix[i] = new int[dim2] {0};
+        }
+        int getElement(int row, int column);
+        void displayMatrix() 
+        {
+                int i, j;
+                cout << "\nElementele matricii: ";
+                for (i = 0; i < dim1; i++) 
+                {
+                        cout << "\n";
+                        for (j = 0; j < dim2; j++) 
+                                cout << getElement(i, j) << " ";
+                }
+                cout << endl;
+        }
+        void displayColumn(int col);
+        void sub_coloana();
+        void diag_sec();
+        void setElement(int l, int c, int v)
+        {
+                this->matrix[l][c] = v;
+        }
+        void readMatrix();
+        int getL()
+        {
+                return dim1;
+        }
+        int getC()
+        {
+                return dim2;
+        }
+        ~Matrix()
+        {
+                for (int i = 0; i < this->dim1; ++i)
+                        delete[] matrix[i];
+                delete[] matrix;
+        }
+};
+void Matrix::displayColumn(int col) 
+{
+        if (col < 0 || col >= dim2) 
+                cout << "\nColoana cu numarul " << col << " nu exista in matricea din clasa!\n";
+        else 
+        {
+                cout << "\nElementele coloanei " << col << ": ";
+                for (int i = 0; i < dim1; i++) 
+                        cout << getElement(i, col) << " ";
+        }
+}
+int Matrix::getElement(int row, int column) 
+{
+        return matrix[row][column];
+}
+void Matrix::readMatrix()
+{
+        int i, j;
+        cout << "\nIntroduceti elementele matricii: ";
+        for (i = 0; i < dim1; i++)
+        {
+                for (j = 0; j < dim2; j++)
+                {
+                        cout << "\nmatrix[" << i << "][" << j << "] = ";
+                        cin >> matrix[i][j];
+                }
+        }
+}
+void Matrix::sub_coloana()
+{
+        int i, j;
+        for (i=0; i<dim1; i++)
+                for (j = 0; j < dim2; j++)
+                        if (i > j)
+                                cout << getElement(i, j)<<' ';
+}
+void Matrix::diag_sec()
+{
+        int i, j;
+        if (dim1 == dim2)
+        {
+                for (i = 0; i < dim1; i++)
+                        for (j = 0; j < dim2; j++)
+                                if (i + j = n - 1)
+                                        cout << getElement(i, j) << ' ';
+        }
+        else
+                cout << "Nu este patratica!";
+}
+
+int main()
+{
+        int dim1, dim2;
+        cout << "\nIntroduceti dimensiunile 1 si 2 ale matricii: (<=10):\n";
+        cin >> dim1;
+        cin >> dim2;
+        if (dim1 < 1 || dim2 < 1 || dim1>10 || dim2>10)
+        {
+                cout << "Marime invalida!";
+                exit(1);
+        }
+        Matrix m1(dim1, dim2);
+        m1.readMatrix();
+        m1.displayMatrix();
+        m1.setElement(0, 0, 37);
+        m1.displayMatrix();
+        int c;
+        cout << "\nIntroduceti un numar de coloana ale carei elemente vor fi afisate: < " << dim2 << '\n';
+        cin >> c;
+        m1.displayColumn(c);
+        cout << "\nElementele de sub diagonala principala sunt: ";
+        m1.sub_coloana();
+        cout << "\nElementele de pe diagonala secundara sunt: ";
+        m1.diag_sec();
+
+        m1.~Matrix();
+        return 0;
+}
+﻿/*Să se scrie o clasă care are ca variabilă privată un câmp de tip data, definit într-o structură 
+externă clasei (zi  " int, luna  " int, an - int). Clasa conține metode mutator/setter și 
+accesor/getter (publice) pentru informația privată, ca si structura de tip data, pentru fiecare 
+camp din structura. In clasă se mai află doua metode publice care:
+- testează validitatea datei stocate;
+- scrie într-un fișier toate datele din anul curent care preced (cronologic) data stocată în 
+clasă considerand doar atributul an ca fiind variabil;
+In functia main( ), după instanțierea clasei și citirea de la tastatură a componentelor unei date, 
+să se apeleze metodele membre și apoi să se verifice rezultatele obținute. 
+gr 2012*/
+#include <iostream>
+
+using namespace std;
+
+struct date_calend 
+{
+        int day;
+        int month;
+        int year;
+};
+
+class Time 
+{
+private:
+        date_calend date;
+public:
+        int getDay() 
+        {
+                return date.day;
+        }
+        int getMonth() 
+        {
+                return date.month;
+        }
+        int getYear() 
+        {
+                return date.year;
+        }
+        void setDay(int d) 
+        {
+                date.day = d;
+        }
+        void setMonth(int m) 
+        {
+                date.month = m;
+        }
+        void setYear(int y) 
+        {
+                date.year = y;
+        }
+        void ifValid();
+        void writeToFile();
+};
+
+void Time::ifValid() 
+{
+        if (date.month < 1 || date.month>12) 
+        {
+                cout << "\nMonth number is not valid";
+                exit(1);
+        }
+        if (date.year > 2022) 
+        {
+                cout << "\nThe year is not valid";
+                exit(1);
+        }
+        if ((date.month == 4) || (date.month == 6) || (date.month == 9) || (date.month == 11)) 
+        {
+                if ((date.day < 1) || (date.day > 30)) 
+                {
+                        cout << "\nDate number is not valid!";
+                        exit(1);
+                }
+        }
+        if (date.month == 2) 
+        {
+                if ((date.year % 4 == 0) && (date.year % 100 == 0) && (date.year % 400 != 0)) 
+                {
+                        if ((date.day < 1) || (date.day > 29)) 
+                        {
+                                cout << "\nDate number is not valid!";
+                                exit(1);
+                        }
+                }
+                else 
+                {
+                        if (date.day < 1 || date.day>28) 
+                        {
+                                cout << "\nDate number is not valid!";
+                                exit(1);
+                        }
+                }
+        }
+}
+void Time::writeToFile() 
+{
+        FILE fis, * f1 = &fis;
+        fopen_s(&f1, "date.txt", "w+");
+        fprintf(f1, "Dates are:");
+        fprintf(f1, "\nDay: %d", date.day);
+        fprintf(f1, "\nMonth: %d", date.month);
+        fprintf(f1, "\nYear: %d", date.year);
+        cout << "\nThe dates have been stored in the file";
+}
+
+int main() 
+{
+        Time no1;
+        cout << "Enter the date: ";
+        int a, b, c;
+        cout << "\nDay: ";
+        cin >> a;
+        cout << "Month: ";
+        cin >> b;
+        cout << "Year: ";
+        cin >> c;
+        no1.setDay(a);
+        no1.setMonth(b);
+        no1.setYear(c);
+        no1.ifValid();
+        no1.writeToFile();
+        return 0;
+}
+﻿#include <iostream>
+#include <math.h>
+using namespace std;
+/*Să se scrie o aplicaţie C++ care implementează o clasă numită Triunghi. Clasa cuprinde
+atributele private pentru laturile a, b, c de tip int, un constructor cu parametrii, metode setter si 
+getter adecvate. Calculați aria și perimetrul prin metode specifice clasei. Scrieți o metodă care 
+să indice dacă triunghiul este dreptunghic sau nu. Definiti o metoda private cu parametrii in
+clasa care permite verificarea condiției ca laturile să formeze un triunghi. Ea va fi folosita si 
+de metodele setter.
+gr 2012*/
+class Triunghi
+{
+        int a, b, c;
+        void posibil(int a, int b, int c)
+        {
+                if (!((a > 0) and (b > 0) and (c > 0) and (a + b > c) and (a + c > b) and (b + c > a)))
+                {
+                        cout << "Dimensiune imposibila!";
+                        exit(1);
+                }
+        }
+public:
+        Triunghi(int a = 5, int b = 5, int c = 5)
+        {
+                posibil(a, b, c);
+                this->a = a;
+                this->b = b;
+                this->c = c;
+        }
+        int getA()
+        {
+                return a;
+        }
+        int getB()
+        {
+                return b;
+        }
+        int getC()
+        {
+                return c;
+        }
+        void setA(int a)
+        {
+                posibil(a, b, c);
+                this->a = a;
+        }
+        void setB(int b)
+        {
+                posibil(a, b, c);
+                this->b = b;
+        }
+        void setC(int c)
+        {
+                posibil(a, b, c);
+                this->c = c;
+        }
+        int aria()
+        {
+                unsigned int p = (a + b + c) / 2;
+                unsigned int Aria = sqrt(p * (p - a) * (p - b) * (p - c));
+                return Aria;
+
+        }
+        int perimetru()
+        {
+                return a + b + c;
+        }
+        void dreptunghic()
+        {
+                if (a * a == b * b + c * c || b * b == a * a + c * c || c * c == b * b + a * a)
+                        cout << "\nNumerele " << a << "," << b << "," << c << " pot fi lungimile laturilor unui triunghi dreptunghic";
+                else
+                        cout << "\nNu este dretunghic";
+
+        }
+};
+int main()
+{
+        Triunghi t(3, 5, 4);
+        cout << t.getA();
+        t.dreptunghic();
+        cout << "\nAria triunghiului este: " << t.aria();
+        cout << "\nPerimetrul triunghiului este: " << t.perimetru();
+}
+﻿
+#include <iostream>
+#include <string>
+using namespace std;
+/*Să se scrie clasa Seif, cu atributele private cifru (pin 4 cifre int) și suma de 
+tip double. Definiți metodele private getSuma() și setSuma( ) și metodele public puneInSeif( )
+și scoateDinSeif( ) cu care să accesați suma de bani care se află în seif. 
+Instanțiați obiecte din clasa Seif, iar metodele puneInSeif( ) și scoateDinSeif( ) 
+vor putea accesa suma doar dacă parametrul de tip cifru utilizat corespunde obiectului 
+instanțiat. În caz de diferență de cifru, se va da un mesaj.
+gr2012*/
+class Seif
+{
+        int pin;
+        double suma;
+        double getSuma()
+        {
+                return suma;
+        }
+        void setSuma(double suma)
+        {
+                this->suma = suma;
+        }
+public:
+        Seif(int pin=0, double suma=0)
+        {
+                if (pin < 0 || pin>9999)
+                {
+                        cout << "PIN INVALID!";
+                        exit(1);
+                }
+                this->pin = pin;
+                this->suma = suma;
+        }
+        double puneInSeif(int cod, double bani=0)
+        {
+                if (pin != cod)
+                {
+                        cout << "Pin gresit!";
+                        exit(1);
+                }
+                suma += bani;
+                return suma;
+        }
+        double scoateDinSeif(int cod, double bani=0)
+        {
+                if (pin != cod)
+                {
+                        cout << "Pin gresit!";
+                        exit(1);
+                }
+                suma -= bani;
+                if (suma < 0)
+                {
+                        cout << "Nu sunt suficienti bani!";
+                        exit(1);
+                }
+                return getSuma();
+        }
+
+};
+int main()
+{
+        int ok, pin;
+        double sum, bani;
+
+        cout << "Seteaza PIN-ul seifului: ";
+        cin >> pin;
+        cout << "Cati bani introduci in seif? ";
+        cin >> bani;
+        Seif s1(pin, bani);
+
+        do 
+        {
+                cout << "\n(1) pentru a pune bani in seif\n(2) pentru a scoate bani din seif\n(0)pentru a parasi camera\n";
+                cin >> ok;
+                if (ok == 1)
+                {
+                        cout << "\nIntrodu PIN:";
+                        cin >> pin;
+                        cout << "\nIntrodu suma: ";
+                        cin >> bani;
+                        sum = s1.puneInSeif(pin, bani);
+                        cout << "Noua suma in seif este: " << sum;
+                }
+                else
+                        if (ok == 2)
+                        {
+                                cout << "\nIntrodu PIN:";
+                                cin >> pin;
+                                cout << "\nIntrodu suma: ";
+                                cin >> bani;
+                                sum = s1.scoateDinSeif(pin, bani);
+                                cout << "Noua suma in seif este: " << sum;
+                        }
+                        else
+                        {
+                                exit(1);
+                        }
+        } while (ok);
+        return 0;
+
+}
+﻿#include <iostream>
+#include <time.h>
+using namespace std;
+const int dim_sir = 24;
+/*Dezvoltați aplicația prezentată în exemplul 6 varianta a doua, b) prin:
+- permiterea intoducerii de coduri CNP care încep cu alte cifre decât 1 și 2, cu analiza
+semnificației noilor valori (5  " masculin, 6 - feminin).
+*/
+class Person 
+{
+        char nume[dim_sir];
+        char prenume[dim_sir];
+        char cnp[14];
+        // structura CNP: S AN LU ZI 6cifre; total 13 cifre
+public:
+        void setNume(char* n);
+        void setPrenume(char* p);
+        int setValidCnp(char* c);
+        char* getNume(void) {
+                return nume;
+        }
+        char* getPrenume(void) {
+                return prenume;
+        }
+        char* getCnp(void) {
+                return cnp;
+        }
+        char get_gender(void);
+        int get_an_nast(void);
+        int get_luna_nast(void);
+        int get_zi_nast(void);
+        int get_varsta(void);
+};
+void Person::setNume(char* n) 
+{
+        if (n != 0)
+                strncpy_s(nume, n, dim_sir - 1);
+        else
+                strcpy_s(nume, "Necunoscut");
+}
+void Person::setPrenume(char* p) 
+{
+        if (p != 0)
+                strncpy_s(prenume, p, dim_sir - 1);
+        else
+                strcpy_s(prenume, "Necunoscut");
+}
+int Person::setValidCnp(char* c) 
+{
+        char buf[3];
+        int n;
+        if (c != 0) 
+        {
+                // validare CNP: numai pentru cifra gen, cifrele pentru AN, LU, ZI
+                if (strlen(c) != 13)//lungime cnp
+                        return 1;
+                if (c[0] != '1' && c[0] != '2' && c[0] != '5' && c[0] != '6')//cod cnp
+                        return 2;
+                strncpy_s(buf, c + 1, 2);//an
+                buf[2] = '\0';
+                n = atoi(buf);
+                if (n > 99)
+                        return 3;
+                strncpy_s(buf, c + 3, 2);//luna
+                buf[2] = '\0';
+                n = atoi(buf);
+                if (n == 0 || n > 12)
+                        return 4;
+                strncpy_s(buf, c + 5, 2);//zi
+                buf[2] = '\0';
+                n = atoi(buf);
+                if (n == 0 || n > 31)
+                        return 5;
+                strcpy_s(cnp, c);//sir valid in cnp
+                return 0;
+        }
+        else return -1;
+}
+char Person::get_gender(void) 
+{
+        if (cnp[0] == '1' || cnp[0]=='5') 
+                return 'M';
+        if (cnp[0] == '2' || cnp[0]=='6') 
+                return 'F';
+        return 'X';
+}
+int Person::get_an_nast(void) 
+{
+        char buf[3];
+        strncpy_s(buf, cnp + 1, 2);
+        buf[2] = '\0';
+        if (cnp[0] == '1' || cnp[0] == '2')
+                return(1900 + atoi(buf));
+        else
+                return(2000 + atoi(buf));
+}
+int Person::get_luna_nast(void) 
+{
+        char buf[3];
+        strncpy_s(buf, cnp + 3, 2);
+        buf[2] = '\0';
+        return(atoi(buf));
+}
+int Person::get_zi_nast(void) 
+{
+        return((cnp[5] - '0') * 10 + (cnp[6] - '0'));
+}
+int Person::get_varsta(void) 
+{
+        struct tm newTime;
+        time_t szClock;
+        time(&szClock);
+        localtime_s(&newTime, &szClock);
+        int an_c = 1900 + newTime.tm_year;
+        int an_n = get_an_nast();
+        int n = an_c - an_n;
+        int lu_c = newTime.tm_mon + 1;
+        int lu_n = get_luna_nast();
+        if (lu_c < lu_n)
+                n--;
+        else 
+        {
+                if (lu_c == lu_n) 
+                {
+                        int zi_c = newTime.tm_mday;
+                        int zi_n = get_zi_nast();
+                        if (zi_c < zi_n) 
+                                n--;
+                }
+        }
+        return n;
+}
+int main() 
+{
+        Person p1;
+        char aux_string[dim_sir];
+        cout << "\nEnter Name: ";
+        cin >> aux_string;//Popescu
+        p1.setNume(aux_string);
+        cout << "\nEnter SurName: ";
+        cin.ignore();
+        gets_s(aux_string, dim_sir);//Preia Prenume si cu spatiu
+        p1.setPrenume(aux_string);
+
+        cout << "\nEnter CNP: ";
+        cin >> aux_string;//1890403120671
+        int t_cnp = p1.setValidCnp(aux_string);
+
+        switch (t_cnp) 
+        {
+        case 0: 
+                cout << "\nCNP valid\n";
+                cout << "\nDate despre obiect: " << endl;
+                cout << "\tNume: " << p1.getNume() << ", Prenume: " << p1.getPrenume() << ", CNP: " << p1.getCnp() << endl;
+                cout << "\tGen: " << p1.get_gender() << endl;
+                cout << "\tData nasterii: " << p1.get_an_nast() << "/" << p1.get_luna_nast() << "/" << p1.get_zi_nast() << endl;
+                cout << "\tVarsta: " << p1.get_varsta() << endl; 
+                break;
+        case 1: 
+                cout << "\nLungime sir CNP invalid"; 
+                break;
+        case 2: 
+                cout << "\nGen invalid"; 
+                break;
+        case 3: 
+                cout << "\nAn invalid"; 
+                break;
+        case 4: 
+                cout << "\nLuna invalida"; 
+                break;
+        case 5: 
+                cout << "\nZi invalida"; 
+                break;
+        default: 
+                cout << "\nProbleme CNP"; 
+                break;
+        }
+        return 0;
+}

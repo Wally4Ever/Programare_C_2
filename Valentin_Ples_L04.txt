@@ -1,0 +1,960 @@
+
+﻿/*(Bubble - Sort) care foloseşte un indicator flag şi optimizează ciclul interior.Se
+cere atât scrierea funcţiei, cât şi partea de program care face citirea şi afişarea şirului iniţial şi a celui ordonat.
+gr 2012*/
+#include <iostream>
+using namespace std;
+void read(int numere[], int);
+void afis(int numere[], int);
+void bubble(int numere[], int);
+int main()
+{
+        int dim, *numere;
+        cout << "\nIntrodu nr. elemente: ";
+        cin >> dim;
+        numere = new int[dim];
+        read(numere, dim);
+        afis(numere, dim);
+        bubble(numere, dim);
+        cout << "\nSorted array:\n";
+        afis(numere, dim);
+        delete[]numere;
+}
+void read(int numere[], int dim)
+{
+        for (int i = 0; i < dim; i++) 
+        {
+                numere[i] = rand()%100;
+        }
+}
+void afis(int numere[], int dim)
+{
+        for (int i = 0; i < dim; i++)
+                cout << numere[i] << ' ';
+}
+void bubble(int numere[], int dim)
+{
+        bool ok;
+        do
+        {
+                ok = 1;
+                for (int i = 0; i < dim - 1; i++) 
+                {
+                        if (numere[i] > numere[i + 1]) 
+                        {
+                                swap(numere[i], numere[i + 1]);
+                                ok = 0;
+                        }
+                }
+        } while (ok == 0);
+}
+
+﻿/*Modificaţi (Quick-Sort) aşa încât să ordoneze şirul iniţial
+în ordine descrescătoare
+gr 2012*/
+#include <iostream>
+using namespace std;
+void read(int numere[], int);
+void afis(int numere[], int);
+int comparare(const void*, const void*);
+int main()
+{
+        int dim, * numere;
+        cout << "\nIntrodu nr. elemente: ";
+        cin >> dim;
+        numere = new int[dim];
+        read(numere, dim);
+        afis(numere, dim);
+        qsort((int*)numere, dim, sizeof(int), comparare);
+        cout << "\nSorted array:\n";
+        afis(numere, dim);
+        delete[]numere;
+}
+void read(int numere[], int dim)
+{
+        for (int i = 0; i < dim; i++)
+        {
+                numere[i] = rand() % 100;
+        }
+}
+void afis(int numere[], int dim)
+{
+        for (int i = 0; i < dim; i++)
+                cout << numere[i] << ' ';
+}
+int comparare(const void* arg1, const void* arg2)
+{
+        return -(*(int*)arg1 - *(int*)arg2);
+}
+
+﻿/*Folosiţi funcţiile de bibliotecă pentru sortări (qsort( )) pentru a aranja un tablou unidimensional de înregistrări 
+cu nume, prenume, cod numeric personal, data angajării după două câmpuri la alegere (un exemplu ar fi: 
+crescător după nume şi descrescător după data angajării)
+gr 2012*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+const int dim = 14;
+struct Datac {
+        int an;
+        int luna;
+        int zi;
+};
+struct Pers {
+        char numep[dim], pren[dim], cnp[dim];
+        struct Datac datan;
+};
+int cmp(const void* a, const void* b);
+int main() {
+        struct Pers angaj[] = {
+        {"x3", "y1", "13", {2001, 6,15}},
+        {"x2", "y1", "10", {1960, 12,31}},
+        {"x3", "y3", "11", {2002, 9, 22}},
+        {"x2", "y2", "12",{1960, 12, 31}},
+        {"x1", "y3", "20",{1980, 2, 28}}
+        };
+        int i;
+        int nang = sizeof(angaj) / sizeof(angaj[0]);
+
+        qsort((Pers*)angaj, nang, sizeof(angaj[0]), (int (*)(const void*, const void*))cmp);//descresc data, cresc nume+prenume
+
+        printf("Datele sortate :\n");
+        for (i = 0; i < nang; i++)
+                printf("\t%s, %s, %s, %d, %d, %d\n", angaj[i].numep, angaj[i].pren, angaj[i].cnp, angaj[i].datan.an, angaj[i].datan.luna, angaj[i].datan.zi);
+}
+int cmp(const void* aa, const void* bb)
+{
+        Pers* a = (Pers*)aa;
+        Pers* b = (Pers*)bb;
+        if ((a->datan).an > (b->datan).an) 
+                return -1;
+        else
+                if ((a->datan).an < (b->datan.an)) return 1;
+                else 
+                {
+                        if ((a->datan).luna > (b->datan).luna)
+                                return -1;
+                        else 
+                                if ((a->datan).luna < (b->datan).luna) 
+                                        return 1;
+                                else 
+                                {
+                                        if ((a->datan).zi > (b->datan).zi)
+                                                return -1;
+                                        else 
+                                                if ((a->datan).zi < (b->datan).zi)
+                                                        return 1;
+                                                else
+                                                        if ((strcmp(a->numep, b->numep) > 0)) 
+                                                                return 1;
+                                                        else
+                                                                if ((strcmp(a->numep, b->numep) < 0)) 
+                                                                        return -1;
+                                                                else
+                                                                        if ((strcmp(a->pren, b->pren) > 0))
+                                                                                return 1;
+                                                                        else
+                                                                                if ((strcmp(a->pren, b->pren) < 0))
+                                                                                        return -1;
+                                return 0;
+                        }
+                }
+}
+
+﻿/*Scrieţi o aplicaţie C/C++ in care plecând de la două tablouri (unidimensionale) de numere naturale să se obţină 
+un al treilea tablou care să conţină toate elementele tablourilor sursă fără a se repeta, aranjate în ordine 
+crescătoare.
+gr 2012*/
+#include <iostream>
+using namespace std;
+void read(int numere[], int);
+void afis(int numere[], int);
+int comparare(const void*, const void*);
+void merge(int[], int[], int[], int);
+int main()
+{
+    int dim, * a, *b;
+    cout << "\nIntrodu nr. elemente: ";
+    cin >> dim;
+    a = new int[dim];
+    b = new int[dim];
+    read(a, dim);
+    afis(a, dim);
+    read(b, dim);
+    afis(b, dim);
+    int *c = new int[2 * dim+1];
+
+    qsort((int*)a, dim, sizeof(int), comparare);
+    qsort((int*)b, dim, sizeof(int), comparare);
+    cout << "\nSorted array:\n";
+    afis(a, dim);
+    afis(b, dim);
+    cout << "\nMerged array: ";
+    merge(a, b, c, dim);
+    afis(c, 2 * dim);
+    delete[] a;
+    delete[]b;
+    delete[]c;
+    return 0;
+}
+void read(int numere[], int dim)
+{
+    for (int i = 0; i < dim; i++)
+    {
+        numere[i] = rand() % 100;
+    }
+}
+void afis(int numere[], int dim)
+{
+    for (int i = 0; i < dim; i++)
+        cout << numere[i] << ' ';
+    cout << '\n';
+}
+int comparare(const void* arg1, const void* arg2)
+{
+    return (*(int*)arg1 - *(int*)arg2);
+}
+void merge(int a[], int b[], int c[], int n)
+{
+    int i = 0, j = 0,  p = 0;
+    while (i < n && j < n)
+        if (a[i] < b[j])
+            c[p++] = a[i++];
+        else
+            c[p++] = b[j++];
+    while (i < n)
+        c[p++] = a[i++];
+    while (j < n)
+        c[p++] = b[j++];
+}
+
+﻿/*alte metode de sortare (sortarea prin selectie, sortarea 
+shell, etc.) Comparati timpii de lucru ai fiecarui algoritm folosind tablouri cu dimensiune mare. Comentati 
+in acest caz partea de afisare. Introduceti un timer (1-5 sec.) intre sortari in main().
+gr 2012*/
+#ifdef _WIN32
+#include <Windows.h>
+#else
+#include <unistd.h>
+#endif
+#include <iostream>
+using namespace std;
+#include <time.h>
+
+void init(int [], int);
+void afis(int [], int);
+void bubble(int [], int);
+void quick(int [], int);
+void shell(int[], int);
+void selection(int [], int );
+int comparare(const void* arg1, const void* arg2);
+int main() 
+{
+        int dim, * numere;
+        unsigned int microsecond = 1000;
+        cout << "\nIntrodu nr. elemente: ";
+        cin >> dim;
+        numere = new (std::nothrow) int[dim];
+        if (numere == 0) 
+        { 
+                cout << "\nErr. alocare elemente: \n"; 
+                exit(1); 
+        }
+        init(numere, dim);
+        quick(numere, dim);
+        Sleep(2*1000);
+
+        init(numere, dim);
+        bubble(numere, dim);
+        Sleep(2 * 1000);
+
+        init(numere, dim);
+        shell(numere, dim);
+        Sleep(2 * 1000);
+
+        init(numere, dim);
+        selection(numere, dim);
+        Sleep(2 * 1000);
+        
+        delete[]numere;
+        return 0;
+}
+void init(int numere[], int dim)
+{
+        clock_t start, end;
+        double dif;
+        time_t t;
+        start = clock();
+        srand((unsigned)time(&t));//srand((unsigned)time(0));
+        for (int i = 0; i < dim; i++) {
+                numere[i] = rand();
+        }
+        end = clock();
+        dif = (double)(end - start);
+        cout << "\nGenerarea numerelor a durat (clicks) " << dif << " si (seconds) " << dif / CLOCKS_PER_SEC
+                << endl;
+}
+void afis(int numere[], int dim)
+{
+        clock_t start, end;
+        double dif;
+        start = clock();
+        for (int i = 0; i < dim; i++)
+                cout << " " << numere[i];
+        end = clock();
+        dif = (double)(end - start);
+        cout << "\nAfisarea numerelor a durat (clicks) " << dif << " si (seconds) " << dif / CLOCKS_PER_SEC <<
+                endl;
+}
+void bubble(int numere[], int dim)
+{
+        clock_t start, end;
+        double dif;
+        int aux, ok;
+        start = clock();
+        do {
+                ok = 1;
+                for (int i = 0; i < dim - 1; i++) {
+                        if (numere[i] > numere[i + 1]) {
+                                aux = numere[i];
+                                numere[i] = numere[i + 1];
+                                numere[i + 1] = aux;
+                                ok = 0;
+                        }
+                }
+        } while (ok == 0);
+        end = clock();
+        dif = (double)(end - start);
+        cout << "\nOrdonarea cu \"bubble sort\" a numerelor a durat (clicks) " << dif << " si (seconds) " << dif /
+                CLOCKS_PER_SEC << endl;
+}
+void quick(int numere[], int dim) 
+{
+        clock_t start, end;
+        double dif;
+        start = clock();
+        qsort((int*)numere, dim, sizeof(numere[0]), comparare);
+        end = clock();
+        dif = (double)(end - start);
+        cout << "\nOrdonarea cu \"quick sort\" a numerelor a durat (clicks) " << dif << " si (seconds) " << dif /
+                CLOCKS_PER_SEC << endl;
+}
+int comparare(const void* arg1, const void* arg2)
+{
+        return (*(int*)arg1 - *(int*)arg2);
+}
+void shell(int arr[], int n)
+{
+        clock_t start, end;
+        double dif;
+        start = clock();
+        for (int gap = n / 2; gap > 0; gap /= 2)
+        {
+                for (int i = gap; i < n; i += 1)
+                {
+                        int temp = arr[i];
+                        int j;
+                        for (j = i; j >= gap && arr[j - gap] > temp; j -= gap)
+                                arr[j] = arr[j - gap];
+                        arr[j] = temp;
+                }
+        }
+        end = clock();
+        dif = (double)(end - start);
+        cout << "\nOrdonarea cu \"shell sort\" a numerelor a durat (clicks) " << dif << " si (seconds) " << dif /
+                CLOCKS_PER_SEC << endl;
+}
+void selection(int arr[], int n)
+{
+        clock_t start, end;
+        double dif;
+        start = clock();
+        int i, j, min_idx;
+
+        for (i = 0; i < n - 1; i++)
+        {
+                min_idx = i;
+                for (j = i + 1; j < n; j++)
+                        if (arr[j] < arr[min_idx])
+                                min_idx = j;
+
+                swap(arr[min_idx], arr[i]);
+        }
+        end = clock();
+        dif = (double)(end - start);
+        cout << "\nOrdonarea cu \"selection sort\" a numerelor a durat (clicks) " << dif << " si (seconds) " << dif /
+                CLOCKS_PER_SEC << endl;
+}
+/* m elemente de tip intreg intr-un tablou unidimensional si o valoare intreaga n<m. Impartiti 
+tabloul citit in doua sub-tablori astfel:
+a) primul subtablou va contine primele n elemente din tabloul initial
+b) al doilea subtablou va contine restul elementelor din tablul initial. 
+ 1. sa se ordoneze crescator cele doua subtablouri
+ 2. sa se sorteze tabloul initial, prin interclasarea celor doua subtablori ordonate. (merge-sort)*/
+#include <iostream>
+using namespace std;
+
+void read(int numere[], int);
+void afis(int numere[], int);
+int comparare(const void*, const void*);
+void merge(int[], int[], int[], int, int);
+
+int main()
+{
+    int n, m, * a, * b;
+    cout << "\nIntrodu nr. elemente: ";
+    cin >> m;
+    cout << "\nCate elemente in primul tablou: ";
+    cin >> n;
+    a = new int[n];
+    b = new int[m-n];
+    read(a, n);
+    afis(a, n);
+    read(b, m-n);
+    afis(b, m-n);
+
+    int* c = new int[m+1];
+    int dim_a=n, dim_b=(m-n);
+
+    qsort((int*)a, dim_a, sizeof(int), comparare);
+    qsort((int*)b, dim_b, sizeof(int), comparare);
+
+    cout << "\nSorted array:\n";
+    afis(a, dim_a);
+    afis(b, dim_b);
+
+    cout << "\nMerged array: ";
+    merge(a, b, c, dim_a, dim_b);
+    afis(c, m);
+
+    delete[] a;
+    delete[]b;
+    delete[]c;
+    return 0;
+}
+void read(int numere[], int n)
+{
+    for (int i = 0; i < n; i++)
+    {
+        numere[i] = rand() % 100;
+    }
+}
+void afis(int numere[], int dim)
+{
+    for (int i = 0; i < dim; i++)
+        cout << numere[i] << ' ';
+    cout << '\n';
+}
+int comparare(const void* arg1, const void* arg2)
+{
+    return (*(int*)arg1 - *(int*)arg2);
+}
+void merge(int a[], int b[], int c[], int n, int m)
+{
+    int i = 0, j = 0, p = 0;
+    while (i < n && j < m)
+        if (a[i] < b[j])
+            c[p++] = a[i++];
+        else
+            c[p++] = b[j++];
+    while (i < n)
+        c[p++] = a[i++];
+    while (j < m)
+        c[p++] = b[j++];
+}
+
+﻿/*sortarea unui stoc de Pcatoare.
+structură formată din caracteristicile Pcatoarelor (nume (sir caractere), tip de procesor (sir caractere), 
+frecvventa de tact (long int), dimensiunea memoriei RAM (int), preț (float). Sortarea se va face, la alegerea 
+utilizatorului, după: pret, memorie, tact sau tip de procesor
+gr 2012
+*/
+
+#include <iostream>
+#include <string.h>
+using namespace std;
+#define DIM 30
+
+struct Pc
+{
+        char nume[DIM];
+        char proc[DIM];
+        double frecv;
+        int ram;
+        float pret;
+};
+
+void read(struct Pc* d);
+void afis(struct Pc* d);
+int cmp1(const struct Pc* b, const struct Pc* c);
+int cmp2(const struct Pc* b, const struct Pc* c);
+int cmp3(const struct Pc* b, const struct Pc* c);
+int cmp4(const struct Pc* b, const struct Pc* c);
+
+int main() 
+{
+
+        int i, n, key;
+        cout << "Cate produse doriti sa introduceti: ";
+        cin >> n;
+        struct Pc* array = new struct Pc[n];
+        for (i = 0; i < n; i++) 
+                read(array+i);
+
+        cout << "\n Va rog selectati metoda sortarii\n1->pret\n2->memorie\n3->procesor\n4->frecvventa\n";
+        cin >> key;
+
+
+        switch (key) 
+        {
+
+        case 1:
+                qsort(array, n, sizeof(struct Pc), (int(*)(const void*, const void*))cmp1);
+                break;
+        case 2:
+                qsort(array, n, sizeof(struct Pc), (int(*)(const void*, const void*))cmp2);
+                break;
+        case 3:
+                qsort(array, n, sizeof(struct Pc), (int(*)(const void*, const void*))cmp3);
+                break;
+        case 4:
+                qsort(array, n, sizeof(struct Pc), (int(*)(const void*, const void*))cmp4);
+                break;
+        default:
+                cout << "Tabloul a fost modificat: ";
+
+        }
+
+        for (i = 0; i < n; i++) 
+                afis(array+i);
+
+
+        return 0;
+}
+
+void read(struct Pc* d) 
+{
+        cout << "\nNume PC: ";
+        cin >> d->nume;
+        cout << "Procesor: ";
+        cin >> d->proc;
+        cout << "frecventa de tact: ";
+        cin >> d->frecv;
+        cout << "RAM: ";
+        cin >> d->ram;
+        cout << "Pret: ";
+        cin >> d->pret;
+}
+
+void afis(struct Pc* d) 
+{
+        cout << "\nNume PC: " << d->nume << '\n';
+        cout << "Procesor: " << d->proc << '\n';
+        cout << "frecventa: " << d->frecv << '\n';
+        cout << "RAM: " << d->ram << '\n';
+        cout << "Pret: " << d->pret << '\n';
+}
+
+int cmp1(const struct Pc* b, const struct Pc* c) 
+{
+        if (b->pret < c->pret) 
+                return -1;
+        else 
+                if (b->pret > c->pret) 
+                        return 1;
+        return 0;
+}
+
+
+
+int cmp2(const struct Pc* b, const struct Pc* c) {
+        if (b->ram < c->ram) 
+                return -1;
+        else 
+                if (b->ram > c->ram) 
+                        return 1;
+        return 0;
+}
+
+
+int cmp3(const struct Pc* b, const struct Pc* c) 
+{
+        int pr;
+        pr = strcmp(b->proc, c->proc);
+        if (pr < 0) 
+                return -1;
+        else 
+                if (pr > 0) 
+                        return 1;
+        return 0;
+}
+
+
+int cmp4(const struct Pc* b, const struct Pc* c) 
+{
+        if (b->frecv < c->frecv) 
+                return -1;
+        else 
+                if (b->frecv > c->frecv) 
+                        return 1;
+        return 0;
+}
+﻿/*Preluați din două fișiere doua tablouri unidimensionale ce conțin valori reale. Generați un al treilea tablou care 
+să conțină toate valorile din cele doua tablouri și toate valorile obținute prin medierea valorilor de pe aceeași 
+poziție din cele doua tablouri inițiale. Dacă numărul de elemente ale tablourilor diferă, media se va face 
+considerând valoarea 0.0 pentru elementele lipsă. Ordonați al treilea tablou și numărați câte valori neunice sunt 
+în șir. */
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <cstdio>
+#include <conio.h>
+#include <iostream>
+using namespace std;
+
+float average(float*, float*, int, int);
+void sort(float*, int);
+int nonUnique(float*, int);
+void display(float*, int);
+
+int main() 
+{
+        FILE* f, * g;
+        int val, n, i, n2;
+        float* array, * array2, * array3;
+
+        char nume[] = "fis1.txt", nume2[] = "fis2.txt";
+        //primul fisier
+        f = fopen(nume, "r");
+        if (f == NULL)
+        {
+                cout << "\nError!\n";
+                return 0;
+        }
+        fscanf(f, "%d", &n);
+        array = new float[n];
+        for (i = 0; i < n; i++) 
+        {
+                fscanf(f, "%f", &array[i]);
+        }
+        fclose(f);
+        //al doilea fisier
+        g = fopen(nume2, "r");
+        if (g == NULL)
+        {
+                printf("\nError at opening!\n");
+                _getch();
+                return 0;
+        }
+        fscanf(g, "%d", &n2);
+        array2 = new float[n2];
+        for (i = 0; i < n; i++) {
+                fscanf(f, "%f", &array2[i]);
+        }
+        fclose(g);
+
+        int n3 = n + n2; //marime tablou nou
+        array3 = new float[n3];
+
+        for (i = 0; i < n; i++) 
+                array3[i] = array[i];
+
+        int j = 0;
+        for (i = n; i < n3; i++) 
+        {
+                array3[i] = array2[j];
+                j++;
+        }
+
+        printf("First array: \t");
+        display(array, n);
+        printf("Second array: \t");
+        display(array2, n2);
+
+        printf("\nThe average numbers from the two arrays are: %.2f", average(array, array2, n, n2));
+
+        printf("\n\nThe third array before sorting: ");
+        display(array3, n3);
+
+        sort(array3, n3);
+        printf("The third array after sorting: \t");
+        display(array3, n3);
+
+        printf("\nThe non-unique numbers from the third array is: %d", nonUnique(array3, n3));
+
+        return 0;
+}
+
+void display(float* array, int n) 
+{
+        for (int i = 0; i < n; i++) 
+                printf(" %.1f ", array[i]);
+        cout << '\n';
+}
+
+float average(float* array, float* array2, int n, int n2) 
+{
+        if (n > n2) 
+        {
+                float avg = 0;
+                for (int i = 0; i < n; i++) 
+                {
+                        if (i >= n2)
+                                avg += array[i] / 2;
+                        else
+                                avg += (array[i] + array2[i]) / 2;
+                }
+                return avg;
+        }
+        else 
+        {
+                float avg = 0;
+                for (int i = 0; i < n; i++) 
+                {
+                        if (i >= n) 
+                                avg += array2[i] / 2;
+                        else
+                                avg += (array[i] + array2[i]) / 2;
+                }
+                return avg;
+        }
+}
+
+int nonUnique(float* array, int n) 
+{
+        int ok = 0, nr = 0;
+        for (int i = 0; i < n; i++) 
+        {
+                if (array[i] == array[i + 1]) 
+                {
+                        nr++;
+                        ok = 1;
+                }
+                else 
+                {
+                        if (ok == 1)
+                        {
+                                nr++;
+                                ok = 0;
+                        }
+                }
+        }
+        return nr;
+}
+
+void sort(float* array, int n) 
+{
+        int i, j, ok;
+        float aux;
+        for (i = 0; i < n; i++) 
+        {
+                ok = 0;
+                for (j = 1; j < n - i; j++) 
+                {
+                        if (array[j - 1] > array[j]) 
+                        {
+                                swap(array[j], array[j - 1]);
+                                ok = 1;
+                        }
+                        if (ok == 0) 
+                                break;
+                }
+        }
+}
+/*Generati in mod aleatoriu un tablou de maxim 200 valori intregi, valori nu mai mari de 100. Determinati si 
+afisati valoarea minima, mediana si maxima generata, sortand elementele printr-o metoda la alegere. 
+Determinati valoarea medie si comparati aceasta valoare cu cea mediana (afisati diferenta). Verificati daca 
+valoarea medie este in tabloul initial generat*/
+
+#include <iostream>
+using namespace std;
+
+void bubble(int a[], int n);
+void obs(int a[], int n);
+
+int main()
+{
+        int i, n, a[200];
+        cout << "Cate numere doriti sa generati: ";
+        cin >> n;
+        for (i = 0; i < n; i++) 
+                a[i] = 1 + rand() % 100;
+
+        for (i = 0; i < n; i++) 
+                cout << a[i] << " ";
+
+        bubble(a, n);
+        obs(a, n);
+
+        return 0;
+
+}
+
+void bubble(int a[], int n) 
+{
+        int i, j, ok, aux;
+        for (i = 0; i < n; i++) 
+        {
+                ok = 0;
+                for (j = 1; j < n - i; j++) 
+                {
+                        if (a[j - 1] > a[j]) 
+                        {
+                                swap(a[j], a[j - 1]);
+                                ok = 1;
+                        }
+                        if (ok == 0) 
+                                break;
+                }
+        }
+}
+
+void obs(int a[], int n) 
+{
+        int s = 0;
+        cout << "\n\nValoarea minima: " << a[0] << endl;
+        cout << "Valoarea maxima: " << a[n - 1] << endl;
+        cout << "Valoarea mediana: " << a[n / 2] << endl;
+        for (int i = 0; i < n; i++) 
+                s = s + a[i];
+        cout << "Valoarea medie este: " << s / n << endl;
+        cout << "Diferenta dintre valoarea medie si mediana este: " << (s / n) - (a[n / 2]) << endl;
+}
+
+﻿/* Generati printr-un mecanism aleatoriu un tablou de maxim 200 de valori reale (prin doua tablouri de aceiaşi 
+dimensiune, primul fiind partea intreaga (nu mai mare de 100), al doilea partea fractionara (limitata la 20 ca 
+intreg ce devine .20 fractionar), tabloul real fiind obtinut prin combinarea partii intregi şi fractionare. Afişati 
+tablourile generate, cel real obtinut.
+Sortati folosind functia qsort( ) tabloul real si afisati rezultatul obtinut.
+gr 2012*/
+
+
+#include <iostream>
+using namespace std;
+void afisare(float* a, int n);
+int cmp(const void*, const void*);
+
+int main()
+{
+        int i, n = 200;
+        float* a, * b;
+        a = new float[n];
+        b = new float[n];
+        cout << "Numerele generate sunt: \n\n";
+
+        for (i = 0; i < n; i++)
+                a[i] = (float)(rand() % 100);
+
+        for (i = 0; i < n; i++)
+                b[i] = (float)(rand() % 100);
+
+        cout << "Primul array: ";
+        afisare(a, n);
+        cout << "\nAl doilea array: ";
+        afisare(b, n);
+
+        for (i = 0; i < n; i++)
+                a[i] += b[i] / 100;
+
+        cout << "\n\n\nNumerele concatenate sunt: ";
+        afisare(a, n);
+        cout << "\n\n\nNumerele concatenate ORDONATE sunt: ";
+        qsort(a, n, sizeof(float), cmp);
+        afisare(a, n);
+
+        return 0;
+
+}
+
+void afisare(float* a, int n)
+{
+        for (int i = 0; i < n; i++) 
+        {
+                cout << a[i] << " ";
+                if (i % 15 == 0)
+                        cout << "\n";
+        }
+        cout << "\n";
+}
+int cmp(const void* a, const void* b)
+{
+        int x = *(int*)a, y = *(int*)b;
+        if (x > y)
+                return 1;
+        else
+                if (x == y)
+                        return 0;
+                else
+                        return -1;
+}
+
+/*Alocati in mod dinamic un tablou de n numere intregi, care vor fi citite si afisate. Cititi o valoare cheie de la 
+intrarea standard. Folosind functia _lfind( ) cautati cheia. Folosind functia qsort( )
+sortati apoi acest tablou, pe care il afisati. Cautati folosind functia bsearch() aceiasi valoare in tabloul sortat si 
+afisati pozitia ei*/
+
+#include <iostream>
+using namespace std;
+
+
+int cmp(const void*, const void*);
+void afisare(int* , int );
+int compare(const void*, const void*);
+
+int main()
+{
+        int i, a[200];
+        unsigned int n;
+        cout << "Cate numere doriti sa generati: ";
+        cin >> n;
+        for (i = 0; i < n; i++)
+                a[i] = 1 + rand() % 100;
+        afisare(a, n);
+
+        cout << "\nValoare cautata: ";
+        int key;
+        cin >> key;
+        int* x;
+        x=(int*)_lfind(&key, a, &n, sizeof(int), compare);
+        if (x!= NULL)
+                printf("%d is in the array\n", *x);
+        else
+                printf("%d is not in the array\n", key);
+        cout << "\nTablou ordonat:\n";
+        qsort(a, n, sizeof(int), cmp);
+        afisare(a, n);
+        x= (int*)bsearch(&key, a, n, sizeof(int), compare);
+        if (x != NULL)
+                printf("%d is in the array\n", *x);
+        else
+                printf("%d is not in the array\n", key);
+        return 0;
+
+}
+
+void afisare(int* a, int n)
+{
+        for (int i = 0; i < n; i++)
+        {
+                cout << a[i] << " ";
+                if ((i+1) % 15 == 0)
+                        cout << "\n";
+        }
+        cout << "\n";
+}
+int cmp(const void* a, const void* b)
+{
+        int x = *(int*)a, y = *(int*)b;
+        if (x > y)
+                return 1;
+        else
+                if (x == y)
+                        return 0;
+                else
+                        return -1;
+}
+int compare(const void* a, const void* b)
+{
+        return (*(int*)a - *(int*)b);
+
+}

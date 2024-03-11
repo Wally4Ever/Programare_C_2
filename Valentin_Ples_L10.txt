@@ -1,0 +1,1060 @@
+
+﻿/*Implementaţi programul prezentat în exemplul 3 şi examinaţi eventualele erori date la 
+compilare daca exista prin eliminarea comentariilor. Modificaţi programul astfel încât să se 
+poată accesa din funcţia main( ), prin intermediul obiectului obiect_derivat, şi metodele 
+aduna( ) şi scade( ) din clasa de baza pastrand mostenirea de tip private
+gr 2012*/
+#include <iostream>
+using namespace std;
+class Baza 
+{
+protected:
+        int a, b;
+public:
+        Baza() 
+        { 
+                a = 1;
+                b = 1;
+        }
+        void setA(int a) 
+        {
+                this->a = a;
+        }
+        void setB(int b) 
+        {
+                this->b = b;
+        }
+        int getA() 
+        {
+                return a;
+        }
+        int getB() 
+        {
+                return b;
+        }
+        int aduna() 
+        {
+                return a + b;
+        }
+        int scade() 
+        {
+                return a - b;
+        }
+};
+class Derivata : private Baza
+{
+public:
+        int inmulteste() 
+        {
+                return a * b;
+        }
+        int adunaWrapper() { return aduna(); }
+        int scadeWrapper() { return scade(); }
+};
+
+int main()
+{
+        Baza obiect_baza;
+        cout << "\nAfis din baza (val. initiale): " << obiect_baza.getA() << " " <<obiect_baza.getB() << '\n';
+        cout << "\nSuma este (cu val. initiale, baza) = " << obiect_baza.aduna();
+        cout << "\nDiferenta este (cu val. initiale, baza) = " << obiect_baza.scade();
+        obiect_baza.setA(2);
+        obiect_baza.setB(3);
+        cout << "\nAfis din baza (modificat): " << obiect_baza.getA() << " " << obiect_baza.getB() << '\n';
+        cout << "\nSuma/Diferenta dupa setare= " << obiect_baza.aduna() << "/" <<obiect_baza.scade() << '\n';
+
+        Derivata obiect_derivat;
+        cout << "\nProdusul este (din derivat cu val. initiale) = " << obiect_derivat.inmulteste() << '\n';
+        cout << "\nSuma este (din derivat cu val. initiale, baza) = " << obiect_derivat.adunaWrapper( ); 
+        cout << "\nDiferenta este (din derivat cu val. initiale, baza) = " <<obiect_derivat.scadeWrapper( ); 
+                
+}
+
+/*Using the classes from public inheritance example, implement 2 classes with the following 
+requests:
+- the Baza class has the methods for:
+- coding an array of characters (using a user-defined algorithm   recommended XOR 
+with a fix mask) => public;
+- displaying the original and the coded array = > public;
+- the Deriv class has a method for:
+- appending the coded array at the end of a previously created text file. 
+Each record respects the format: record_number: coded_array;
+The methods located in both classes are accessed using an instance of the Deriv class. The 
+program that uses the classes reads from the keyboard an array of characters and allows the 
+user to choose whether the input will be coded or will be appended at the end of the text file.*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <string.h>
+#include <fstream>
+#include < cstdlib >
+#include <iostream>
+
+using namespace std;
+class Baza 
+{
+protected:
+    char str[50];
+    char mask = 0b01000111;
+
+public:
+    void setS(char* str);
+    void cod();
+    void display();
+};
+
+class Deriv : public Baza 
+{
+public:
+    void add_to_file();
+};
+
+int getNum();
+
+
+ifstream fin("records.txt");
+ofstream fout("records.txt", ios_base::out | ios_base::app);
+
+int number = getNum();
+long stoi(const char* s)
+{
+    long i;
+    i = 0;
+    while (*s >= '0' && *s <= '9')
+    {
+        i = i * 10 + (*s - '0');
+        s++;
+    }
+    return i;
+}
+int main() 
+{
+    Deriv deriv_obj;
+    char str[50], type = 0;
+
+    cout << "String: ";
+    cin >> str;
+    deriv_obj.setS(str);
+
+    while (type != 'q')
+    {
+        cout << "\nWhat to do with the string?\nc - code\na - "
+            "add to file\nd - display \nq - quit: ";
+        cin >> type;
+
+        switch (type) 
+        {
+        case 'c':
+            deriv_obj.cod();
+            break;
+        case 'a':
+            deriv_obj.add_to_file();
+            break;
+        case 'd':
+            deriv_obj.display();
+            break;
+        case 'q':
+            break;
+        default:
+            cout << "Wrong!";
+        }
+    }
+}
+
+void Baza::cod() 
+{
+    for (int i{}; i < strlen(str); i++)
+        str[i] ^= mask;
+}
+void Baza::display() 
+{
+    cout << str << endl; 
+}
+void Baza::setS(char* str) 
+{ 
+    strcpy(this->str, str); 
+}
+void Deriv::add_to_file() 
+{ 
+    fout << number << " = " << str << endl; 
+}
+
+int getNum() 
+{
+    char str[60]{}, str2[60]{};
+
+    if (fin.fail())
+        return 1;
+
+    while (!fin.eof()) 
+    {
+        strcpy(str2, str);
+        fin.getline(str, 60);
+    }
+    return stoi(str2) + 1;
+}
+/*Implement a class that has 2 protected integer variables, that contains a setter and getter
+methods for each attribute. Write a second class that inherits the first defined class and 
+implements the elementary arithmetic operations (+, -, *, /) applied on the variables mentioned 
+above the results being returned by methods. Write a third class Deriv from the second one 
+that implements the methods for calculating the square root of a number received as parameter, and for raising a numeric value to a 
+certain power 
+gr 2012*/
+#include <math.h>
+#include <iostream>
+
+using namespace std;
+
+class Baza
+{
+protected:
+    int a, b;
+
+public:
+    Baza(int x = 1, int y = 0) 
+    {
+        a = x;
+        b = y;
+    }
+    void setA(int x) { a = x; }
+    void setB(int x) { b = x; }
+    int getA() { return a; }
+    int getB() { return b; }
+};
+
+class Deriv : public Baza 
+{
+protected:
+    Baza d;
+public:
+    Deriv(Baza x = { 1, 1 }) 
+    { 
+        setD(x);
+    }
+
+    int getA() { return d.getA(); }
+    int getB() { return d.getB(); }
+
+    void setD(Baza x) 
+    {
+        d.setA(x.getA());
+        d.setB(x.getB());
+    }
+    Baza getD() { return d; }
+
+    void operator=(Deriv x) 
+    {
+        d.setA(x.getA());
+        d.setB(x.getB());
+    }
+    Baza operator+(Baza x) 
+    {
+        Baza op;
+        op.setA(getA() + x.getA());
+        op.setB(getB() + x.getB());
+        return op;
+    }
+    Baza operator-(Baza x) 
+    {
+        Baza op;
+        op.setA(getA() - x.getA());
+        op.setB(getB() - x.getB());
+        return op;
+    }
+    Baza operator*(Baza x) 
+    {
+        Baza op;
+        op.setA(getA() * x.getA());
+        op.setB(getB() * x.getB());
+        return op;
+    }
+    Baza operator/(Baza x) 
+    {
+        Baza op;
+        op.setA(getA() / x.getA());
+        op.setB(getB() / x.getB());
+        return op;
+    }
+};
+
+class Pow : public Deriv
+{
+protected:
+    Deriv d;
+public:
+    Pow() {}
+    Pow(Pow& x) 
+    { 
+        d = x.getD(); 
+    }
+    int getA() { return d.getA(); }
+    int getB() { return d.getB(); }
+
+    void operator=(Pow x) 
+    {
+        d.setA(x.getA());
+        d.setB(x.getB());
+    }
+    void setD(Deriv x) 
+    {
+        d.setD(x.getD()); 
+    }
+
+    Baza sqrt(Baza x) 
+    {
+        Baza y;
+        y.setA(std::sqrt(x.getA()));
+        y.setB(std::sqrt(x.getB()));
+        return y;
+    }
+
+    Baza pow(Baza base, Baza exp) 
+    {
+        Baza y;
+        y.setA(std::pow(base.getA(), exp.getA()));
+        y.setB(std::pow(base.getB(), exp.getB()));
+        return y;
+    }
+};
+
+int main() 
+{
+    int a, b;
+
+    cout << "Enter 2 numbers for the object x: ";
+    cin >> a >> b;
+    Baza x;
+    x.setA(a);
+    x.setB(b);
+  
+
+    cout << "\nEnter 2 numbers for the object y: ";
+    cin >> a >> b;
+    Baza y;
+    y.setA(a);
+    y.setB(b);
+
+    cout << "\nobj x: " << x.getA() << " " << x.getB();
+    cout << "\nobj y: " << y.getA() << " " << y.getB();
+    Deriv d;
+    d.setD(x);
+
+    Deriv c;
+    c.setD(d + y);
+    cout << "\nx + y = " << c.getA() << ' ' << c.getB();
+
+    c.setD(d - y);
+    cout << "\nx - y = " << c.getA() << ' ' << c.getB();
+
+    c.setD(d * y);
+    cout << "\nx * y = " << c.getA() << ' ' << c.getB();
+
+    c.setD(d / y);
+    cout << "\nx / y = " << c.getA() << ' ' << c.getB();
+
+    Pow p;
+    p.setD(d);
+
+    c.setD(p.sqrt(x));
+    cout << "\nsqrt(x) = " << c.getA() << ' ' << c.getB();
+
+    c.setD(p.pow(x, y));
+    cout << "\nx ^ y = " << c.getA() << ' ' << c.getB();
+
+    return 0;
+}
+
+#/*Define a class called Triangle with 3 attributes for the triangle sides that has a method that 
+calculates the perimeter of the triangle with the sides introduced from the KB. Another class, 
+Triangle_extended, is derived in public mode from Triangle and defines a method for 
+calculating the triangle's area. Using objects from both classes call the allowed methods.
+Verify before to instantiate the objects the possibility to define a Triangle object
+gr 2012*/
+#include <math.h>
+#include <iostream>
+
+using namespace std;
+
+class Triangle 
+{
+    float a, b, c;
+
+public:
+    float perim();
+
+    void setA(float a) { this->a = a; }
+    void setB(float b) { this->b = b; }
+    void setC(float c) { this->c = c; }
+
+    float getA() { return a; }
+    float getB() { return b; }
+    float getC() { return c; }
+};
+
+class Triangle_extended : public Triangle 
+{
+    Triangle t;
+
+public:
+    void setT(Triangle x) 
+    {
+        t.setA(x.getA());
+        t.setB(x.getB());
+        t.setC(x.getC());
+    };
+    float area();
+};
+
+int main() 
+{
+    Triangle t;
+    float a, b, c;
+
+    cout << "Laturi:\n";
+    cout << "a: ";
+    cin >> a;
+    cout << "\nb: ";
+    cin >> b;
+    cout << "\nc: ";
+    cin >> c;
+ 
+    t.setA(a);
+    t.setB(b);
+    t.setC(c);
+    cout << "Perimetru: " << t.perim();
+
+    Triangle_extended e;
+    e.setT(t);
+    cout << "\nSuprafata: " << e.area();
+    return 0;
+}
+
+float Triangle::perim() 
+{ return a + b + c; }
+
+float Triangle_extended::area() 
+{
+    float p = t.perim() / 2;
+    float a = pow(p - t.getA(), 2);
+    float b = pow(p - t.getB(), 2);
+    float c = pow(p - t.getC(), 2);
+
+    return p * sqrt(a + b + c);
+}
+
+#/*Extend the second class from the previous problem with a method that can compute the 
+triangle's height. Call the method using an adequate object
+gr 2012*/
+#include <math.h>
+#include <iostream>
+
+using namespace std;
+
+class Triangle
+{
+    float a, b, c;
+
+public:
+    float perim();
+
+    void setA(float a) { this->a = a; }
+    void setB(float b) { this->b = b; }
+    void setC(float c) { this->c = c; }
+
+    float getA() { return a; }
+    float getB() { return b; }
+    float getC() { return c; }
+};
+
+class Triangle_extended : public Triangle
+{
+    Triangle t;
+
+public:
+    void setT(Triangle x)
+    {
+        t.setA(x.getA());
+        t.setB(x.getB());
+        t.setC(x.getC());
+    };
+    float area();
+    float height();
+};
+
+int main()
+{
+    Triangle t;
+    float a, b, c;
+
+    cout << "Laturi:\n";
+    cout << "a: ";
+    cin >> a;
+    cout << "\nb: ";
+    cin >> b;
+    cout << "\nc: ";
+    cin >> c;
+
+    t.setA(a);
+    t.setB(b);
+    t.setC(c);
+    cout << "Perimetru: " << t.perim();
+
+    Triangle_extended e;
+    e.setT(t);
+    cout << "\nSuprafata: " << e.area();
+    cout << "\nInaltime: " << e.height();
+    return 0;
+}
+
+float Triangle::perim()
+{
+    return a + b + c;
+}
+
+float Triangle_extended::area()
+{
+    float p = t.perim() / 2;
+    float a = pow(p - t.getA(), 2);
+    float b = pow(p - t.getB(), 2);
+    float c = pow(p - t.getC(), 2);
+
+    return p * sqrt(a + b + c);
+}
+float Triangle_extended::height() {
+    float a = area();
+    return a * 2.0 / t.getB();
+}
+/*Define a class Shape that considers a shape with a name attribute as a pointer to character 
+string. The class will contain a constructor without parameters, one with parameters, 
+copy/move constructors and the assign operator will be overloaded. The class will also have 
+getter/setter methods and a destructor. Derive in public mode a Circle class that adds an int
+type attribute to the radius and appropriate constructors considering also the attributes (name, 
+radius) and a getter method for the radius and other methods that calculate the area and 
+perimeter of the circle of radius r, value entered in main () from the keyboard.
+In the same mode define other classes (Square, Rectangle, etc.) Instantiate objects from the 
+derived classes and display the area and the perimeter. The data will be introduced from the 
+KB. Define a Circle object with parameters introduced from the KB, to copy to a new object 
+and display its attributes. Define a Square object with parameters and another without 
+parameters. Assign the instantiated object with the parameters to the one without parameters 
+and display the attributes.
+gr2012*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+
+using namespace std;
+#define DIM 50
+
+class Shape 
+{
+protected:
+        char* name;
+public:
+        Shape() 
+        {
+                name = new char[DIM];
+                strcpy(name, "default");
+        }
+        Shape(Shape& s) 
+        { 
+                *this = s; 
+        }
+        void operator=(Shape& s) 
+        {
+                delete[] name;
+                name = s.getName();
+        }
+        void setName(char name[DIM]) 
+        {
+                strcpy(this->name, name);
+        }
+
+        char* getName() 
+        {
+                return name;
+        }
+
+        /*~Shape()
+        {
+                delete[] name;
+        }*/
+};
+
+class Circle : public Shape 
+{
+        int radius;
+public:
+        Circle(int radius = 0) 
+        {
+                name = new char[DIM];
+                this->radius = radius;
+                strcpy(name, "default");
+        }
+        Circle(Circle& c) 
+        { 
+                *this = c; 
+        }
+        void operator=(Circle& c) 
+        {
+                name = c.getName();
+                radius = c.radius;
+        }
+        int getRadius() 
+        {
+                return radius;
+        }
+
+        void setName(char name[DIM]) 
+        {
+                strcpy(this->name, name);
+        }
+
+        char* getName() 
+        {
+                return name;
+        }
+        double area() 
+        {
+                return 3.14 * radius * radius;
+        }
+
+        double perimeter() {
+                return 2 * 3.14 * radius;
+        }
+
+        /*~Circle() {
+                delete[] name;
+        }*/
+};
+
+class Square : public Shape
+{
+protected:
+        int lat;
+public:
+        Square(int lat = 0) 
+        {
+                name = new char[DIM];
+                this->lat = lat;
+                strcpy(name, "default");
+        }
+        Square(Square& s) { *this = s; }
+
+        void operator=(Square& s) 
+        {
+                name = s.getName();
+                lat = s.lat;
+        }
+        void setName(char name[DIM]) 
+        {
+                strcpy(this->name, name);
+        }
+
+        char* getName() 
+        {
+                return name;
+        }
+
+        int getLat() 
+        {
+                return lat;
+        }
+
+        int area() 
+        {
+                return lat * lat;
+        }
+
+        int perimeter()
+        {
+                return 4 * lat;
+        }
+
+        /*~Square()
+        {
+                delete[] name;
+        }*/
+};
+
+
+class Rectangle : public Shape {
+protected:
+        int lat1, lat2;
+public:
+        Rectangle(int lat1 = 0, int lat2 = 0) {
+                name = new char[DIM];
+                this->lat1 = lat1;
+                this->lat2 = lat2;
+                strcpy(name, "default");
+        }
+
+        void setName(char name[DIM]) {
+                strcpy(this->name, name);
+        }
+
+        char* getName() {
+                return name;
+        }
+
+        int area() {
+                return lat1 * lat2;
+        }
+
+        int perimeter() {
+                return 2 * (lat1 + lat2);
+        }
+
+        int getLat1() {
+                return lat1;
+        }
+
+        int getLat2() {
+                return lat2;
+        }
+
+        /*~Rectangle() {
+                delete[] name;
+        }*/
+};
+ 
+int main() 
+ {
+        int radius, lat, lat1, lat2;
+        char name[DIM];
+        cout << "Radius: ";
+        cin >> radius;
+        cout << "Name: ";
+        cin >> name;
+
+        Circle C(radius);
+        C.setName(name);
+        Circle x = C;
+        cout << "Area of circle: " << x.area();
+        cout << "\nPerimeter of circle: " << x.perimeter();
+
+        cout << "\n\nSquares side: ";
+        cin >> lat;
+        cout << "Name: ";
+        cin >> name;
+        Square S(lat);
+        S.setName(name);
+        Square sq(S);
+        cout << "Area of square: " << sq.area();
+        cout << "\nPerimeter of square: " << sq.perimeter();
+
+        cout << "\n\nRectangle sides: ";
+        cin >> lat1 >> lat2;
+        cout << "Name: ";
+        cin >> name;
+        Rectangle R(lat1, lat2);
+        R.setName(name);
+        cout << "Area of the rectangle: " << R.area();
+        cout << "\nPerimeter of the rectangle: " << R.perimeter();
+
+        return 0;
+}
+/*Consider a base class Circle defined by a protected attribute radius, that contains a constructor 
+with parameters and a method that will determine the area of the circle. Consider other base 
+class, Square with a protected attribute, length, similar to Circle class. Derive in public mode 
+the class RoundSquare from both classes that will contain a constructor that will call the 
+constructors from base classes and a method that will verify if the square of length l may be 
+included in the circle of radius r. The derived class will also determine the perimeter of both 
+shapes. Instantiate an object from the derived class (data from the KB) and determine the area 
+and perimeter of the composed shapes. Display a message if the square may be included in the 
+circle.
+gr 2012*/
+#include <iostream>
+
+using namespace std;
+
+class Circle 
+{
+protected:
+        int radius;
+public:
+        Circle(int radius = 0) {
+                this->radius = radius;
+        }
+
+        void setRadius(int radius) {
+                this->radius = radius;
+        }
+
+        int getRadius() {
+                return radius;
+        }
+
+        float aria() {
+                return 3.14 * radius * radius;
+        }
+};
+
+class Square 
+{
+protected:
+        int lat;
+public:
+        Square(int lat = 0) {
+                this->lat = lat;
+        }
+
+        float area() {
+                return lat * lat;
+        }
+};
+class RoundSquare : public Circle, public Square 
+{
+public:
+        RoundSquare(int rad, int lat) {
+                Circle cerc(rad);
+                Square patrat(lat);
+        }
+
+        int perimSquare(int lat) {
+                return 4 * lat;
+        }
+
+        double perimCircle(int rad) {
+                return 4 * rad;
+        }
+
+        bool canFit(int lat, int radius) 
+        {
+                if (perimSquare(lat) < perimCircle(radius))
+                        return true;
+                return false;
+        }
+};
+
+int main() 
+{
+        cout << "Enter the side of the square: ";
+        int lat, radius;
+        cin >> lat;
+
+        cout << "Introduce the radius of the circle: ";
+        cin >> radius;
+        RoundSquare ob(radius, lat);
+        cout << "\nThe perim of the square is: " << ob.perimSquare(lat);
+        cout << "\nThe perim of the circle is: " << ob.perimCircle(radius);
+
+        if (ob.canFit(lat, radius))
+                cout << "\n\nThe square fits the circle!";
+        else
+                cout << "\n\nSquare does not fit!";
+
+        return 0;
+}
+/*Consider the Fraction class that has two protected attributes a and b for the nominator and
+denominator and two corresponding setter and getter methods for all attributes. Declare a
+public method named simplify( ) that simplifies a fraction. Define an explicit constructor
+without parameters that initializes a with 0 and b with 1 and another explicit constructor with
+two integer parameters. For this constructor is verified if b!=0 before to be called. Overload
+the addition, subtraction, multiplication and division operators (+, -, *, /) using member
+methods that simplify (if necessary) the obtained results. Define a class named
+Fraction_ext
+that inherits in a public mode the Fraction class and has a parameterized constructor that calls
+the constructor from the base class. Use member methods for overloading the princrementation and pre-decrementation operators that will add/subtract 1 to the value of a
+Fraction_ext instance. Instantiate two Fraction objects without parameters. Set the attributes
+using values read from the keyboard. Perform the implemented operations and initialize other
+four objects with the obtained results. Simplify the results. Instantiate two objects of
+Fraction_ext type with data from the KB. Perform the available operations. Assign the
+operation results to other existing Fraction_ext objects. Simplify and display the obtained
+results
+gr 2012*/
+#include <iostream>
+using namespace std;
+
+class Fraction
+{
+protected:
+    int a;
+    int b;
+public:
+    static int icount;
+    Fraction()
+    {
+        a = 0;
+        b = 1;
+        icount++;
+    }
+    Fraction(int a, int b)
+    {
+        if (b == 0)
+        {
+            cout << "FRACTIE IMPOSIBILA!";
+            exit(1);
+        }
+        this->a = a;
+        this->b = b;
+        icount++;
+    }
+    ~Fraction()
+    {
+        icount--;
+    }
+
+    void setA(int a)
+    {
+        this->a = a;
+    }
+    void setB(int b)
+    {
+        if (b == 0)
+        {
+            cout << "FRACTIE IMPOSIBILA!";
+            exit(1);
+        }
+        this->b = b;
+    }
+    int getA()
+    {
+        return a;
+    }
+    int getB()
+    {
+        return b;
+    }
+
+    int CMMDC()
+    {
+        int a1 = a;
+        int b1 = b;
+        int r = a1 % b1;
+        while (r)
+        {
+            a1 = b1;
+            b1 = r;
+            r = a1 % b1;
+        }
+        return b1;
+    }
+    Fraction simplify()
+    {
+        Fraction rez(a, b);
+        int div;
+        do
+        {
+            div = rez.CMMDC();
+            rez.a /= div;
+            rez.b /= div;
+        } while (div != 1);
+        return rez;
+    }
+    friend Fraction add_fraction(Fraction f1, Fraction f2);
+    friend Fraction subtract_fraction(Fraction f1, Fraction f2);
+    friend Fraction multiply_fraction(Fraction f1, Fraction f2);
+    friend Fraction divide_fraction(Fraction f1, Fraction f2);
+    Fraction operator+=(Fraction x);
+    Fraction operator-=(Fraction x);
+    Fraction operator*=(Fraction x);
+    Fraction operator/=(Fraction x);
+};
+
+int Fraction::icount;
+class Fraction_ext : public Fraction
+{
+public:
+    Fraction_ext(int x, int y) : Fraction(x, y) {}
+    Fraction_ext(Fraction x) : Fraction(x) {}
+
+    Fraction operator++(int) {
+        a++;
+        return *this;
+    };
+    Fraction operator--(int) {
+        a--;
+        return *this;
+    };
+    Fraction operator++() {
+        Fraction tmp = *this;
+        a++;
+        return tmp;
+    };
+    Fraction operator--() {
+        Fraction tmp = *this;
+        a--;
+        return tmp;
+    };
+};
+
+Fraction divide_fraction(Fraction f1, Fraction f2)
+{
+    Fraction rez;
+    //multiply with reciprocal
+    rez.b = f1.b * f2.a;
+    rez.a = f1.a * f2.b;
+    return rez;
+}
+Fraction multiply_fraction(Fraction f1, Fraction f2)
+{
+    Fraction rez;
+    rez.b = f1.b * f2.b;
+    rez.a = f1.a * f2.a;
+    return rez;
+
+}
+Fraction subtract_fraction(Fraction f1, Fraction f2)
+{
+    Fraction rez;
+    rez.b = f1.b * f2.b;
+    rez.a = f1.a * f2.b - f2.a * f1.b;
+    return rez;
+}
+Fraction add_fraction(Fraction f1, Fraction f2)
+{
+    Fraction rez;
+    rez.b = f1.b * f2.b;
+    rez.a = f1.a * f2.b + f2.a * f1.b;
+    return rez;
+
+}
+Fraction Fraction::operator+=(Fraction x)
+{
+    return add_fraction(*this, x);
+}
+Fraction Fraction::operator-=(Fraction x)
+{
+    return subtract_fraction(*this, x);
+}
+Fraction Fraction::operator*=(Fraction x)
+{
+    return multiply_fraction(*this, x);
+}
+Fraction Fraction::operator/=(Fraction x)
+{
+    return divide_fraction(*this, x);
+}
+
+int main()
+{
+    Fraction f1(14, 35);
+    cout << "\nNumar obiecte fractie: " << Fraction::icount;
+    Fraction f2 = f1.simplify();
+
+    Fraction sum = add_fraction(f1, f2);
+
+
+    cout << '\n' << f1.getA() << '/' << f1.getB();
+    cout << "\n" << f2.getA() << '/' << f2.getB();
+
+    cout << "\nAdunare: " << sum.getA() << '/' << sum.getB();
+    sum = subtract_fraction(f1, f2);
+    cout << "\nScadere: " << sum.getA() << '/' << sum.getB();
+    sum = multiply_fraction(f1, f2);
+    cout << "\nInmultire: " << sum.getA() << '/' << sum.getB();
+    sum = divide_fraction(f1, f2);
+    cout << "\nImpartire: " << sum.getA() << '/' << sum.getB();
+    sum = f1 += f2;
+    cout << "\nAdunare: " << sum.getA() << '/' << sum.getB();
+    sum = f1 -= f2;
+    cout << "\nScadere: " << sum.getA() << '/' << sum.getB();
+    sum = f1 *= f2;
+    cout << "\nInmultire: " << sum.getA() << '/' << sum.getB();
+    sum = f1 /= f2;
+    cout << "\nImpartire: " << sum.getA() << '/' << sum.getB();
+    Fraction_ext fractie(f1);
+    fractie++;
+    cout << "\nIncrementare fractie 1: " << fractie.getA() << '/' << fractie.getB();
+    --fractie;
+    cout << "\nIncrementare fractie 1:" << fractie.getA() << '/' << fractie.getB();
+
+    return 0;
+}

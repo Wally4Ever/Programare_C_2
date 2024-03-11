@@ -1,0 +1,537 @@
+
+
+/*aranjamente
+Gr 2012*/
+
+#include <iostream>
+using namespace std;
+
+int aranjamente(int, int);
+
+int main()
+{
+        int n, k;
+        cout << "Aranjamente de n=";
+        cin >> n;
+        cout << "k=";
+        cin >> k;
+        printf("\nAranjamente de %d luate cate %d este %d\n", n, k, aranjamente(n, k));
+        return 0;
+
+}
+int aranjamente(int n, int k)
+{
+        if (k == 1)
+                return n;
+        else
+                return n*aranjamente(n - 1, k - 1);
+}
+
+
+/*combinari
+Gr 2012*/
+
+#include <iostream>
+using namespace std;
+
+float comb(int, float);
+
+int main()
+{
+        int n;
+        float k;
+        cout << "Combinari (k<n) de n=";
+        cin >> n;
+        cout << "k=";
+        cin >> k;
+        printf("\Combinari de %d luate cate %.f este %.f\n", n, k, comb(n, k));
+        return 0;
+
+}
+float comb(int n, float k)
+{
+        if (n == 0 || k==0 || n==k)
+                return 1;
+        else
+                return comb(n - 1, k)*(n/(n-k));
+}
+
+
+/*CMMDC
+Gr 2012*/
+
+#include <iostream>
+using namespace std;
+
+int cmmdc(int, int);
+
+int main()
+{
+        int a, b;
+        cout << "CMMDC-ul dintre a=";
+        cin >> a;
+        cout << "b=";
+        cin >> b;
+        printf("\nCMMDC-ul este %d\n", cmmdc(a, b));
+        return 0;
+
+}
+int cmmdc(int a, int b)
+{
+        int r = a % b;
+        if (r == 0)
+                return b;
+        else
+                return cmmdc(b, r);
+}
+
+﻿/*
+        an = (an - 1 + bn - 1) / 2
+        bn = sqrt(an - 1 * bn - 1) determinaţi an şi bn, pentru n, a0, b0
+        gr 2012
+*/
+
+
+#include <iostream>
+#include <math.h>
+using namespace std;
+
+float an (int, int, int);
+float bn(int, int, int);
+
+int main()
+{
+    int a, b, n;
+    cout << "Introduceti n: ";
+    cin >> n;
+    cout << "Introduceti a: ";
+    cin >> a;
+    cout << "Introduceti b: ";
+    cin >> b;
+    printf("\nAn este: %.2f\n", an(a, b, n));
+    printf("\nBn este: %.2f\n", bn(a, b, n));
+    return 0;
+
+}
+float an(int a, int b, int n)
+{
+    if (n)
+        return (an(a, b, n - 1) + bn(a, b, n - 1))/2;
+    else
+        return a;
+}
+float bn(int a, int b, int n)
+{
+    if (n)
+        return sqrt(an(a, b, n - 1) * bn(a, b, n - 1));
+    else
+        return b;
+}
+/*
+    sir de caractere in ordine inversa
+    gr 2012
+*/
+
+
+#include <iostream>
+#include <string.h>
+using namespace std;
+
+void invers(char[], int);
+
+int main()
+{
+    char s[255];
+    cout << "Introdu sir:\n";
+    cin.getline(s, 255);
+    cout << "\nSirul citit este: " << s;
+    cout << "\n\nSirul inversat este: ";
+    int n = strlen(s);
+    invers(s, n-1);
+    return 0;
+
+}
+void invers(char s[], int n)
+{
+    if (n)
+    {
+        cout << s[n];
+        invers(s, n - 1);
+    }
+    else
+        cout<< s[0];
+}
+/*
+    produs scalar a 2 vectori
+    gr 2012
+*/
+
+
+#include <iostream>
+using namespace std;
+
+int scalar(int[], int[], int);
+
+int main()
+{
+    int a[30], b[30], n;
+    cout << "\nIntrodu dimensiunea tablourilor: ";
+    cin >> n;
+    cout << "Introdu tablou 1:\n";
+    for (int i = 0; i < n; i++)
+    {
+        printf("\na[%d]=", i);
+        cin >> a[i];
+    }
+    cout << "Introdu tablou 2:\n";
+    for (int i = 0; i < n; i++)
+    {
+        printf("\nb[%d]=", i);
+        cin >> b[i];
+    }
+    printf("\nProdusul scalar a celor doi vectori este: %d", scalar(a, b, n-1));
+
+    return 0;
+
+}
+int scalar(int a[], int b[], int n)
+{
+    
+    if (n)
+        return (a[n] * b[n] + scalar(a, b, n - 1));
+    else
+        return a[n] * b[n];
+
+}
+/*Suma numere pare citite dintr-un fisier recursiv
+gr 2012*/
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <iostream>
+#include <stdlib.h>
+using namespace std;
+
+int suma(int n, int v[]);
+
+int main()
+{
+        FILE* f;
+        fopen_s(&f, "fis.txt", "r");
+        
+        int n, v[30];
+
+        fscanf(f, "%d", &n);
+
+        for (int i = 0; i < n; i++)
+                fscanf(f, "%d", &v[i]);
+
+        printf("Suma numerelor pare este: %d", suma(n - 1, v));
+        fclose(f);
+        return 0;
+}
+
+int suma(int n, int v[])
+{
+        if (n == 0)
+        {
+                if (v[n] % 2 == 0)
+                        return v[n];
+                else
+                        return 0;
+        }
+        else 
+        {
+                if (v[n] % 2 != 0)
+                        return suma(n - 1, v);
+                else
+                        return v[n] + suma(n - 1, v);
+        }
+
+}
+﻿
+/*produsul elementelor aflate pe poziţii 
+impare într-un tablou unidimensional, respectiv suma numerelor prime
+gr 2012*/
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <iostream>
+#include <stdlib.h>
+using namespace std;
+
+int suma_impar(int n, int v[]);
+int suma_prim(int n, int v[]);
+bool prim(int);
+
+int main()
+{
+    FILE* f;
+    
+    fopen_s(&f, "fis1.txt", "r");
+
+    int n, v[30];
+
+    fscanf(f, "%d", &n);
+
+    for (int i = 0; i < n; i++)
+        fscanf(f, "%d", &v[i]);
+
+    
+
+    printf("Suma numerelor de pe pozitii impare este: %d\nSuma numerelor prime este: %d", suma_impar(n - 1, v), suma_prim(n-1, v));
+    fclose(f);
+    return 0;
+}
+
+int suma_impar(int n, int v[])
+{
+    if (n == 0)
+        return 0;
+    else
+    {
+        if (n % 2 == 0)
+            return suma_impar(n - 1, v);
+        else
+            return v[n] + suma_impar(n - 1, v);
+    }
+
+}
+int suma_prim(int n, int v[])
+{
+    if (n == 0)
+    {
+        if (prim(v[n]))
+            return v[n];
+        else
+            return 0;
+    }
+    else
+    {
+        if (!prim(n))
+            return suma_prim(n - 1, v);
+        else
+            return v[n] + suma_prim(n - 1, v);
+    }
+
+}
+bool prim(int n)
+{
+    for (int i = 2; i <= n / 2; i++)
+        if (n % i == 0)
+            return 0;
+    return 1;
+}
+﻿/*suma valorilor introduse de la tastatură cu confirmare, 
+adică cereți utilizatorului să indice dacă mai dorește să mai introducă o nouă valoare sau nu. 
+Modificați funcția pentru a calcula și afișa, și media valorilor date de utilizator. Semnalați 
+printr-un mesaj când suma valorilor depășește o anumită valoare prestabilită
+ gr 2012*/
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <conio.h>
+
+int sum(int[], int );
+
+int main()
+{
+        int* v = new int[20];
+        int i = 0;
+        char key = 65;
+        printf("Introduceti valorile: \n\n");
+        do
+        {
+                printf("v[%d]= ", i);
+                scanf("%d", &v[i]);
+
+                if ((key != 'n') && (key != 'N')) 
+                {
+                        printf("Apasati <<N>> pentru iesire. Orice altceva pentru a continua:\n");
+                        key = _getch();
+                }
+                if ((key != 'n') && (key != 'N')) i++; // incrementare daca se doreste alt numar
+        } while ((key != 'n') && (key != 'N')); // citire cu confirmare
+
+        
+        const int prag = 100;
+        int nr = i+1;
+        int suma = sum(v, nr-1);
+        printf("Suma totala este: %d", suma);
+        if (suma > prag)
+                printf("\nS-a depasit valoarea maxima!");
+
+        printf("\nMedia numerelor este: %.2f", (float)suma/(nr));
+        return 0;
+}
+
+int sum(int v[], int n)
+{
+        if (n == 0)
+                return v[0];
+        else
+                return v[n] + sum(v, n - 1);
+}
+
+
+﻿/*Determinați în mod 
+recursiv și nerecursiv numărul de apariții în tablou ale unei valori întregi x
+gr 2012*/
+
+#include <iostream>
+
+using namespace std;
+
+void cit(int* v, int n);
+int AP_re(int* v, int n, int x);
+int AP_it(int* v, int n, int x);
+
+int main()
+{
+        int n;
+        cout << "Introduceti numarul de valori: ";
+        cin >> n;
+        int* v = new int[n];
+        cit(v, n);
+        int x;
+        cout << "\nValoarea cautata este: ";
+        cin >> x;
+        cout << "\n(recursiv)Numarul de aparitii este: " << AP_re(v, n-1, x);
+        cout << "\n(iterativ)Numarul de aparitii este: " << AP_it(v, n, x);
+        
+        return 0;
+}
+
+void cit(int* v, int n)
+{
+        cout << "\nIntroduceti numerele \n";
+        for (int i = 0; i < n; i++) 
+        {
+                printf("v[%d]=", i);
+                cin >> v[i];
+        }
+}
+
+int AP_re(int* v, int n, int x)
+{
+        if (n != 0) 
+        {
+                if (v[n] == x)
+                        return 1 + AP_re(v, n-1, x);
+                else
+                        return AP_re(v, n-1, x);
+        }
+        else 
+        {
+                if (v[n] == x)
+                        return 1;
+                else
+                        return 0;
+        }
+}
+
+int AP_it(int* v, int n, int x)
+{
+        int nr = 0;
+        for (int i = 0; i < n; i++)
+                if (v[i] == x)
+                        nr++;
+        return nr;
+}
+
+﻿/*n întreg pozitiv în baza 10 introdus de la tastatură. Folosind o funcție 
+recursivă convertiți valoarea n într-o altă bază de numerație 1<b<10 citită de la tastatură
+gr 2012*/
+
+#include <iostream>
+using namespace std;
+
+int change(int n, int b);
+int main()
+{
+        int n, b;
+        cout << "Introduceti un numar in baza 10: ";
+        cin >> n;
+        cout << "In ce baza doriti sa il convertiti: ";
+        cin >> b;
+        printf("Numarul %d convertit in baza %d este %d", n, b, change(n, b));
+        return 0;
+}
+
+int change(int n, int b)
+{
+        if (n == 0 || b == 10)
+                return n;
+        return (n % b) + 10 * change(n / b, b);
+}
+﻿/*Fie ecuația de gradul 2: x2 �"sx +p=0. Fără a calcula rădăcinile x1 și x2 determinați, daca e 
+posibil, Sn = x1n + x2n
+folosind reprezentarea recursivă a sumei: Sum(n) ={ 2, dacă n=0; s,
+dacă n=1; s*Sum(n-1) �" p*Sum(n-2), dacă n>1; } unde s și p sunt valori reale iar n întreagă, 
+introduse de la tastatură.
+gr 2012*/
+#include <iostream>
+
+using namespace std;
+float sum(int, float, float);
+int main()
+{
+        int n;
+        float s, p;
+        cout << "Introduceti varolile n, s(x1+x2) si p(x1*x2): ";
+        cin >> n >> s >> p;
+        cout << "Suma este: " << sum(n, s, p);
+        return 0;
+}
+
+float sum(int n, float s, float p)
+{
+        if (n == 0)
+                return 2;
+        else {
+                if (n == 1)
+                        return s;
+                else {
+                        if (n > 1)
+                                return s * sum(n - 1, s, p) - p * sum(n - 2, s, p);
+                }
+        }
+}
+﻿/* valoarea seriei 
+armonice sn=1/1+1/2+1/3+…1/n, unde n este un număr natural, cu două funcții diferite.
+Apelați cele două funcții cu diferite valori ale lui n
+gr 2012*/
+#include <iostream>
+
+using namespace std;
+
+float it(int);
+float re(int);
+
+int main()
+{
+        int n;
+        cout << "Introduceti valoarea n: ";
+        cin >> n;
+        cout << "\nValoarea sumei armonice recursive este de: " << it(n) << "\n";
+        cout << "\nValoarea sumei armonice iteratve este de: " << re(n) << "\n";
+        return 0;
+}
+
+float it(int n)
+{
+        float s = 0;
+        for (int i = 1; i <= n; i++)
+        {
+                s += (float)1 / (float)i;
+        }
+        return s;
+}
+
+float re(int n)
+{
+        if (n == 1)
+                return 1;
+        else
+                return (1 / (float)n) + re(n - 1);
+}

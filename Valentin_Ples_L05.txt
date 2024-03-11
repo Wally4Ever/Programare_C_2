@@ -1,0 +1,614 @@
+
+#pragma once
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <cstring>
+#define DIM 50
+
+class myString 
+{
+private:
+        char s[50];
+public:
+        void setString(char x[DIM]) 
+        {
+                strcpy_s(s, x);
+        }
+        char* getString()
+        {
+                return s;
+        }
+        int length() 
+        {
+                return strlen(s);
+        }
+        void uElem() 
+        {
+                for (int i = 0; i < strlen(s); i++) 
+                {
+                        s[i] = toupper(s[i]);
+                }
+        }
+        void lElem() 
+        {
+                for (int i = 0; i < strlen(s); i++) 
+                {
+                        s[i] = tolower(s[i]);
+                }
+
+        }
+        int charNum(char x) 
+        {
+                int nr = 0;
+                for (int i = 0; i < strlen(s); i++) 
+                {
+                        if (x == s[i]) 
+                                nr++;
+                }
+                return nr;
+        }
+        int charPos(char x) 
+        {
+                int nr = 0;
+                for (int i = 0; i < strlen(s); i++) 
+                {
+                        if (x == s[i]) 
+                                nr = i+1;
+                }
+                return nr;
+        }
+};
+
+#pragma once
+class Circle
+{
+        int raza;
+public:
+        Circle(int r)
+        {
+                raza = r;
+        }
+        float calcA()
+        {
+                return 3.14f * raza * raza;
+        }
+        float calcP()
+        {
+                return 2 * 3.14f * raza;
+        }
+        int getRaza()
+        {
+                return raza;
+        }
+        void setRaza(int r)
+        {
+                raza = r;
+        }
+        /*~Circle()
+        {
+                cout << "\nDestructor";
+        }*/
+};
+//circle
+#pragma once
+struct Scircle
+{
+        int raza;
+};
+float surface(Scircle c)
+{
+        return 3.14f * c.raza * c.raza;
+}
+float perimetru(Scircle c)
+{
+        return 2 * 3.14f * c.raza;
+}
+
+#include <iostream>
+using namespace std;
+#include "Circle.h"
+#include "Scircle.h"
+
+/*struct Scircle
+{
+        int raza;
+};
+float surface(Scircle c)
+{
+        return 3.14f * c.raza * c.raza;
+}
+float perimetru(Scircle c)
+{
+        return 2 * 3.14f * c.raza;
+}*/
+
+/*class Circle
+{
+        int raza;
+public:
+        Circle(int r)
+        {
+                raza = r;
+        }
+        float calcA()
+        {
+                return 3.14f * raza * raza;
+        }
+        float calcP()
+        {
+                return 2 * 3.14f * raza;
+        }
+        int getRaza()
+        {
+                return raza;
+        }
+        void setRaza(int r)
+        {
+                raza = r;
+        }
+        ~Circle()
+        {
+                cout << "\nDestructor";
+        }
+};*/
+//circle
+
+int main() 
+{
+        //STRUCT
+        int r;
+        Scircle c1, c2;
+        cout << "STRUCT methods";
+        cout << "\nEnter radius 1: ";
+        cin >> c1.raza;
+        cout << "Enter radius 2: ";
+        cin >> c2.raza;
+        cout << "Area of 1st circle is: " << surface(c1);
+        cout << "\nPerimetru 1st cerc: " << perimetru(c1);
+
+        cout << "\n.............................\n";
+
+        //CLASA
+        cout << "OBJECTS with class circle";
+        Circle x1(2), x2(3);
+        r = x1.getRaza();
+        cout << "\nRadius 1 is: " << r;
+        r = x2.getRaza();
+        cout << "\nRadius 2 is: " << r;
+        cout << "\nArea of 1st circle is: " << x1.calcA();
+        cout << "\nPerimiter of 1st circle is: " << x2.calcP();
+        cout << "\n...................................\n";
+        //POINTER
+        Circle* p;
+        p = &x2;
+        cout << "\nArea of 2nd circle (pointer) is: " << p->calcA();
+        //REFRENCE
+        Circle& ref = x2;
+        cout << "\nPerimiter of 2nd circle(refrence) is: " << ref.calcP();
+        cout << "\n.............................\n";
+        return 0;
+}
+﻿/*Să se definească o clasă numită myString (într-un fişier numit strClass.h) care să fie compusă 
+din metodele specifice care efectuează următoarele operaţii pe şiruri de caractere:
+- determină lungimea şirului primit la intrare. 
+- determină ultima poziţie de apariţie a unui anumit caracter din şirul de intrare.
+- returnează şirul primit la intrare, scris cu caractere majuscule.
+- returnează şirul primit la intrare, scris cu caractere minuscule.
+- returnează numărul de apariţii ale unui anumit caracter din şirul primit.
+gr 2012*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include "strClass.h"
+
+using namespace std;
+#define DIM 50
+
+
+int main()
+{
+        myString s;
+        char x[DIM], e;
+        cout << "Enter string: ";
+        cin >> x;
+        cout << "What character do you want to check in the string: ";
+        cin >> e;
+        s.setString(x);
+        cout << "\nThe string lenght is: " << s.length() << '\n';
+        cout << "Last position of " << e << " in string is: " << s.charPos(e) << "\n";
+        cout << "Number of occurences of " << e << " in string is: " << s.charNum(e) << "\n";
+        cout << "\nThe string with all lower letters will be: ";
+        s.lElem();
+        cout << s.getString();
+        cout << "\nThe string with all capital letters will be: ";
+        s.uElem();
+        cout << s.getString();
+
+        return 0;
+}
+﻿/*clasa Numar cu un atribut de tip int val şi care, în 
+cadrul funcţiei main(), declară un obiect de tipul clasei şi apoi un pointer la acesta, prin 
+intermediul cărora se va afişa pe ecran rezultatul adunării a două numere de tip Numar cu 
+valorile preluate de la tastatură in cadrul unor obiecte Numar. Implementati metoda int 
+suma_nr(Numar) care realizeaza suma în cadrul clasei şi o returneaza ca un int, metoda care 
+insumeaza cele doua obiecte (curent si parametru). Implementati metoda in cadrul clasei si 
+alta metoda cu acelas scop, dar nume diferit, in afara clasei
+gr 2012*/
+
+#include <iostream>
+
+using namespace std;
+
+class Number 
+{
+private:
+        int a, b;
+public:
+        void setNumber(int x, int y) 
+        {
+                a = x;
+                b = y;
+        }
+        int sum_inside() 
+        {
+                return a + b;
+        }
+        int sum_outside();
+};
+
+int Number::sum_outside() 
+{
+        return a + b;
+}
+
+int main() 
+{
+        int x, y;
+
+        Number nr1, * p = &nr1;
+        cout << "Introdu 2 numere: ";
+        cin >> x >> y;
+        p->setNumber(x, y);
+
+        cout << "\nSum (method inside class): ";
+        cout << "\n" << x << " + " << y << " = " << p->sum_inside();
+
+        cout << "\n\nSum (method outside the class): ";
+        cout << "\n " << x << " + " << y << " = " << p->sum_outside();
+
+        return 0;
+}
+﻿/*o clasă care implementează:
+- int plus(int x, int y)
+- int minus(int x, int y)
+- int inmultit(int x, int y)
+- float impartit(int x, int y)
+gr 2012*/
+#include <iostream>
+
+using namespace std;
+
+class Functions 
+{
+
+public:
+        int plus(int x, int y) 
+        {
+                return x + y;
+        }
+        int minus(int x, int y) 
+        {
+                return x - y;
+        }
+        int inmultit(int x, int y) 
+        {
+                return x * y;
+        }
+        float impartit(int x, int y) 
+        {
+                if (x == 0 || y == 0) 
+                {
+                        cout << "\nThe operation could not be solved because one of the numbers are 0";
+                        exit(1);
+                }
+                return (float)x / y;
+        }
+};
+
+int main() 
+{
+        Functions func;
+        int x, y;
+        cout << "Enter two numbers: ";
+        cin >> x >> y;
+        cout << "\nThe sum: " << func.plus(x, y);
+        cout << "\nThe difference: " << func.minus(x, y);
+        cout << "\nThe product: " << func.inmultit(x, y);
+        cout << "\nThe division: " << func.impartit(x, y);
+        return 0;
+}
+﻿/*Să se creeze o clasă care să modeleze numerele complexe. Scrieţi un program care utilizează 
+această clasă si defineste doua obiecte afisand caracteristicile obiectelor si rezultatele
+operatiilor definite
+gr 2012*/
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+class Complex 
+{
+        double re, im;
+public:
+        Complex(double x = 0.0, double y = 0.0) 
+        {
+                re = x;
+                im = y;
+        }
+        double modul() 
+        {
+                return sqrt(re * re + im * im);
+        }
+        double faza()
+        {
+                return        atan2(re, im);
+        }
+        void setRe(double real) 
+        {
+                re = real;
+        }
+        double getRe()
+        {
+                return re;
+        }
+        void setIm(double imaginar) 
+        {
+                im = imaginar;
+        }
+        double getIm() 
+        {
+                return im;
+        }
+        void ad_complex(Complex b) 
+        {
+                re += b.re;
+                im += b.im;
+        }
+};
+int main() 
+{
+        Complex ob1, ob2(5, 8);
+        double x;
+
+        cout << "\nPartea reala a obiectului 1 este: \t";
+        cin >> x;
+        ob1.setRe(x);
+        cout << "Partea imaginara a obiectului 1 este: \t";
+        cin >> x;
+        ob1.setIm(x);
+        cout << "\nObiect 1\n";
+        cout << "z = "<<ob1.getRe() << " + " << ob1.getIm() << "*j";
+        cout << "\nModul: " << ob1.modul();
+        cout << "\nFaza: " << ob1.faza() * 180 / 3.1415;
+        cout << "\nObiect 2\n";
+        cout << "z = " << ob2.getRe() << " + " << ob2.getIm() << "*j";
+        cout << "\nModul: " << ob2.modul();
+        cout << "\nFaza: " << ob2.faza() * 180 / 3.1415;
+        ob1.ad_complex(ob2);
+        cout << "\nDupa adunare:\t ";
+        cout << "z = " << ob1.getRe() << " + " << ob1.getIm() << "*j";
+        return 0;
+}
+
+﻿/*clasa Aritmetica
+suma()
+diferenta() 
+metode vor fi apelate prin intermediul unui obiect
+instanțiați trei obiecte de tip Aritmetica. Modificati atributele a si b la fiecare 
+obiect in parte folsind metodele de tip setter
+gr2012*/
+#include <iostream>
+using namespace std;
+
+class Aritmetica 
+{
+private:
+        int a, b;
+public:
+        void setNumb(int n1=0, int n2=0) 
+        {
+                a = n1;
+                b = n2;
+        }
+        int sum(Aritmetica y) 
+        {
+                return a + b + y.a + y.b;
+        }
+        int diff(Aritmetica y);
+};
+
+int Aritmetica::diff(Aritmetica y) 
+{
+        return a + b - y.a - y.b;
+}
+
+int main() {
+        Aritmetica ob1, ob2, ob3;
+        int a, b;
+        cout << "Enter two values for the first object: ";
+        cin >> a >> b;
+        ob1.setNumb(a, b);
+        cout << "Enter two values for the second object: ";
+        cin >> a >> b;
+        ob2.setNumb(a, b);
+        cout << "Enter two values for the third object: ";
+        cin >> a >> b;
+        ob3.setNumb(a, b);
+
+        cout << "\n\nSum between the numbers: (using method implemented inside the class) \n";
+        cout << "\nFirst and Second objects: " << ob1.sum(ob2);
+        cout << "\nSecond and Third objects: " << ob2.sum(ob3);
+        cout << "\nThird and First objects: " << ob3.sum(ob1);
+        cout << "\n\nDiff between the numbers: (using method implemented outside the class)";
+        cout << "\n\nFirst and Second objects: " << ob1.diff(ob2);
+        cout << "\nSecond and Third objects: " << ob2.diff(ob3);
+        cout << "\nThird and First objects: " << ob3.diff(ob1);
+
+        return 0;
+}
+﻿/*Pornind de la clasa Complex, ex.4, să se implementeze operațiile de adunare, scădere, 
+înmulțire și împărțire pentru numere complexe prin metode corespunzătoare implementate la 
+alegere în clasă și/sau în afara ei. */
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+class Complex
+{
+        double re, im;
+public:
+        Complex(double x = 0.0, double y = 0.0)
+        {
+                re = x;
+                im = y;
+        }
+        void setRe(double real)
+        {
+                re = real;
+        }
+        double getRe()
+        {
+                return re;
+        }
+        void setIm(double imaginar)
+        {
+                im = imaginar;
+        }
+        double getIm()
+        {
+                return im;
+        }
+        Complex sum(Complex c)
+        {
+                Complex x;
+                x.re = (re + c.re);
+                x.im = (im + c.im);
+                return x;
+        }
+        Complex difference(Complex c)
+        {
+                Complex x;
+                x.re = (re - c.re);
+                x.im = (im - c.im);
+                return x;
+        }
+        Complex multi(Complex c)
+        {
+                Complex x;
+                x.re = (re * c.re);
+                x.im = (im * c.im);
+                return x;
+        }
+        Complex div(Complex c)
+        {
+                Complex x;
+                x.re = (re / c.re);
+                x.im = (im / c.im);
+                return x;
+        }
+};
+int main()
+{
+        Complex ob1(13, 20), ob2(15, 10), rez(0, 0);
+        double x;
+
+        cout << "Obiect 1\n";
+        cout << "\tz = " << ob1.getRe() << " + " << ob1.getIm() << "*j";
+        cout << "\nObiect 2\n";
+        cout << "\tz = " << ob2.getRe() << " + " << ob2.getIm() << "*j";
+
+        rez=ob1.sum(ob2);
+        cout << "\nAdunare:\t ";
+        cout << "z = " << rez.getRe() << " + " << rez.getIm() << "*j";
+
+        rez = ob1.difference(ob2);
+        cout << "\nScadere:\t ";
+        cout << "z = " << rez.getRe() << " + " << rez.getIm() << "*j";
+
+        rez = ob1.multi(ob2);
+        cout << "\nInmultire:\t ";
+        cout << "z = " << rez.getRe() << " + " << rez.getIm() << "*j";
+
+        rez = ob1.div(ob2);
+        cout << "\nImpartire:\t ";
+        cout << "z = " << rez.getRe() << " + " << rez.getIm() << "*j";
+        return 0;
+}
+
+/*clasa Fractie 
+set() respectiv get()
+simplifica() apelata cu un obiect care determina divizorii numitorului si numaratorului, ii 
+afiseaza si realizeaza simplificarea fractiei
+gr 2012*/
+#include <iostream>
+using namespace std;
+
+class Fractie 
+{
+private:
+        int a, b;
+public:
+        int getA() 
+        {
+                return a;
+        }
+        int getB() 
+        {
+                return b;
+        }
+        void setA(int n) 
+        {
+                a = n;
+        }
+        void setB(int n)
+        {
+                b = n;
+        }
+        void simplify();
+};
+
+void Fractie::simplify() 
+{
+        int nr = 1;
+        for (int i = 1; i <= b; i++)
+        {
+                if ((a % i == 0) && (b % i == 0))
+                {
+                        nr = i;
+                        cout << nr << " ";
+                }
+        }
+
+        Fractie::setA(a / nr);
+        Fractie::setB(b / nr);
+}
+
+int main() 
+{
+        Fractie f1, f2;
+        int a, b;
+        cout << "Prima fracttie: ";
+        scanf_s("%d/%d", &a, &b);
+        f1.setA(a);
+        f1.setB(b);
+
+        f2.setA(32);
+        f2.setB(8);
+
+        cout << "\nDivizori prima fractie: ";
+        f1.simplify();
+        cout << "\nFractia simplificata: " << f1.getA() << "/" << f1.getB();
+
+        cout << "\nDivizori a doua fractie: ";
+        f2.simplify();
+        cout << "\nFractia simplificata: " << f2.getA() << "/" << f2.getB();
+        return 0;
+}

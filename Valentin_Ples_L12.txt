@@ -1,0 +1,530 @@
+
+﻿/*Scrieţi un program C++ în care afişaţi diferite valori în zecimal, octal şi hexazecimal. Afişaţi
+valorile aliniate la dreapta, respectiv la stânga într-un câmp de afişare cu dimensiunea 15.
+Utilizaţi manipulatorul setfill( ) pentru stabilirea caracterului de umplere şi metodele width( )
+şi precision( ) pentru stabilirea dimensiunii câmpului de afişare şi a preciziei. 
+gr 2012*/
+#include <iostream>
+#include <iomanip>
+using namespace std;
+int main()
+{
+        cout.width(20);
+        cout.precision(5);
+        cout.imbue(std::locale("en_US.utf8"));
+        //cout.unsetf(ios::right);
+        cout.setf(ios::left);
+        cout.fill('^');
+        cout <<13.29781 << '\n';
+
+        cout.fill('^');
+        cout.setf(ios::showbase);
+        cout.unsetf(ios::left);
+        cout.setf(ios::internal);
+        cout <<setw(20)<< 28.2891 << '\n';
+        cout << setw(15)<< put_money(123, true) << '\n';
+        cout << setw(30)<<uppercase<< hex << 300 << '\n';
+        return 0;
+}
+/*Scrieti o aplicatie C++ in care se citesc de la tastatura date de diferite tipuri, urmand a fi 
+afisate pe ecran utilizand manipulatorii standard
+gr 2012*/
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+int main() 
+{
+        int x;
+        float y;
+        char c;
+        char s[20];
+        bool ok = 0;
+        cout << "Intreg: ";
+        cin >> x;
+        cout << "Nr real: ";
+        cin >> y;
+        cout << "Caracter: ";
+        cin >> c;
+        cout << "Sir de caractere: ";
+        cin.get();
+        cin.getline(s, 20);
+        cout.width(10);
+        cout.setf(ios::showpos | ios::showbase | ios::right | ios::internal);
+        cout << "Intregul in baza 10: ";
+        cout<< right << x << endl;
+        cout << "Baza hex: "<< hex << x << endl;
+        cout << "Baza octala: ";
+        cout.width(10);
+        cout << oct << x << endl;
+
+        cout << "Numarul real (precizie 2): ";
+        cout.precision(2);
+        cout << setfill('$') << setw(8)<< y << endl;
+        cout << "Precizie 5: ";
+        cout << setprecision(5);
+        cout << y << endl;
+        cout << "Caracter: ";
+        cout << setw(5) << setfill('_') << c << endl;
+        cout.setf(ios::uppercase | ios::boolalpha);
+        //cout.setf(ios::skipws); nu merge?
+        cout << "Sirul de caractere fara spatii: ";
+        cout  << skipws<< s;
+        //nici asta nu elimina caractere spatiu
+        cout << "\nBoolean cu valoare 0: ";
+        cout << ok;
+        return 0;
+} //main
+/*Considerati achizitia de date cu valori reale de la un dispozitiv electronic (10 date). Afisati 
+folosind un mesaj adecvat datele primite considerand un format minimal (partea intreaga). 
+Determinati media acestor valori (partea intreaga), iar daca depaseste un prag stabilit anterior
+(definit sau citit), afisati aceste date in format detaliat considerand ca avem date de tip real, cu 
+o precizie de 3 digiti la partea fractionara.
+gr 2012*/
+#define DIM 2
+#define prag 5
+#include <iostream>
+#include <iomanip>
+using namespace std;
+int avg(float []);
+int main()
+{
+        float arr[DIM];
+        for (int i = 0; i < DIM; i++)
+        {
+                printf("\nValoare reala #%d este: ", i + 1);
+                cin >> arr[i];
+        }
+        for (int i = 0; i < DIM; i++)
+                cout << setw(5) <<left<< setfill('|') << (int)arr[i];
+        int med = avg(arr);
+        if (med < prag)
+                cout << "\nPragul nu a fost atins!";
+        else
+        {
+                cout << "\nMedia este: " << setw(10) << setfill(' ') << right << med<<endl;
+                for (int i = 0; i < DIM; i++)
+                        cout << setw(10) << left << setfill('|') << fixed << setprecision(3) << arr[i];
+        }
+        return 0;
+}
+int avg(float v[])
+{
+        float sum = 0;
+        for (int i = 0; i < DIM; i++)
+                sum += v[i];
+        return sum / DIM;
+}
+﻿/*Definiti o clasa numita MiscareAccelerata care contine atributele private dc (distanta curenta, 
+vc (viteza curenta) si a (acceleratia), atributele dc, vc si a sunt initializate in constructor iar 
+valoarea lor este cea data de d0 si v0, si a0 ca si parametri. In clasa sunt supraincarcati 
+operatorii de extractie si de inserție pentru a se putea initializa si afisa caracteristicile unei 
+instante. Implementati metoda determinaMiscarea care re-calculeaza variabilele dc si vc, pe 
+baza unui numar de secunde primit ca si parametru si avand in vedere legea miscarii rectilinii 
+uniform accelerate cu acceleratie a0.
+Instantiati clasa si apoi folositi membrii definiti.
+gr 2012*/
+#include <iostream>
+using namespace std;
+class MiscareAccelerata
+{
+        int dc, vc, a;
+public:
+        MiscareAccelerata(int d=0, int v=0, int a=0)
+        {
+                dc = d;
+                vc = v;
+                this->a = a;
+        }
+        friend ostream& operator<<(ostream& output, const MiscareAccelerata& ob) {
+                output << "\nDistanta : " << ob.dc << " Viteza : " << ob.vc<<" Acceleratia: "<<ob.a;
+                return output;
+        }
+        friend istream& operator>>(istream& input, MiscareAccelerata& ob) {
+                cout << "Introdu distanta: ";
+                input >> ob.dc;
+                cout << "Introdu viteza: ";
+                input >> ob.vc;
+                cout << "Introdu accelaratia: ";
+                input >> ob.a;
+                return input;
+        }
+        void determinaMiscarea(int s)
+        {
+                dc = dc + vc * s + a * s * s / 2;
+                vc = a * s;
+        }
+};
+int main()
+{
+        MiscareAccelerata masina;
+        cout << "Introduceti param miscarii:\n";
+        cin >> masina;
+        int sec;
+        cout << "\nIntrodu numarul de secunde: ";
+        cin >> sec;
+        masina.determinaMiscarea(sec);
+        cout << "\nNoile atribute:\n";
+        cout << masina;
+        return 0;
+}
+﻿/*Supraîncărcaţi operatorii de extracţie şi de inserţie pentru clasa Complex, în care părţile reale 
+şi imaginare sunt ambele protected de tip real. Derivaţi public o clasă Punct din clasa 
+Complex, adăugând atributul culoare pentru punctul de coordonate x şi y corespunzător părții 
+reale, respectiv imaginare a numărului complex. Supraîncărcaţi din nou aceiași operatori de 
+intrare-ieșire. Instantiati obiecte de tip Complex si Punct si verificati functionalitatea 
+supraincarcarii operatorilor. Asignati un obiect de tip Punct la unul de tip Complex prin 
+upcasting si afisati atributele lui
+gr 2012*/
+#include <iostream>
+using namespace std;
+class Complex {
+protected: 
+        double re, im;
+public:
+
+        Complex() {
+                re = 0;
+                im = 0;
+        }
+        Complex(double x, double y) {
+
+                re = x;
+                im = y;
+        }
+        double getRe()
+        {
+                return re
+                        ;
+        }
+        double getIm()
+        {
+                return im;
+        }
+        void setRe(double x)
+        {
+                re = x;
+        }
+        void setIm(double x)
+        {
+                im = x;
+        }
+        
+        friend ostream& operator<<(ostream& out, const Complex& x)
+        {
+                out<< x.re << " + " << x.im <<'i' << endl;
+                return out;
+        }
+        
+        friend istream& operator>>(istream& in, Complex& x)
+        {
+                cout << "Partea reala: ";
+                in >> x.re;
+                cout << "Parea imaginara: ";
+                in >> x.im;
+                return in;
+        }
+
+};//Complex class
+
+class Point: public Complex
+{
+
+        char culoare;
+
+public:
+
+        Point(double x=0, double y=0, char c='N'): Complex(x, y)
+        {
+                culoare = c;
+        }
+        friend ostream& operator<<(ostream& out, const Point& x)
+        {
+                out << '(' << x.re << " , " << x.im << ") are culoare " << x.culoare;
+                //out << x.re << " + " << x.im << 'i' << endl;
+                return out;
+        }
+
+        friend istream& operator>>(istream& in, Point& x)
+        {
+                //double a, y;
+                cout << "Coord x: ";
+                in >> x.re;
+                //x.setRe(a);
+                cout << "Coord y: ";
+                in >> x.im;
+                //x.setIm(y);
+                cout << "Culoarea punctului: ";
+                cin >> x.culoare;
+                return in;
+        }
+};
+
+
+int main() {
+
+        Complex unu(5, 3), doi;
+        Point a(8, 10, 'R'), b, c;
+
+        Complex* p = &c;
+        cout << unu <<'\n';
+        cout << a << '\n';
+        cin >> doi;
+        cout << doi << '\n';
+        cin >> b;
+        cout << b << '\n';
+        p->setIm(32);
+        p->setRe(64);
+        cout << *p << '\n';
+        return 0;
+
+}//main
+﻿/*Consider the Fraction class that has two private attributes a and b for the nominator and 
+denominator and two corresponding setter and getter methods. Declare a method 
+named simplify( ) that simplifies a fraction and returns a real value. Define an explicit
+constructor without parameters that initializes a with 0 and b with 1 and another explicit 
+constructor that receives two parameters representing the values of the nominator and 
+denominator. For this constructor is verified if b!=0 before to be called. Define a destructor 
+that displays a message. Consider a static variable icount that will be initialized with 0 and 
+incremented in the class’s constructors. Overload the addition, subtraction, multiplication and 
+division operators (+, -, *, /) using friend functions, without simplifying the obtained results.
+Instantiate two Fraction objects and read the corresponding data from the keyboard. 
+
+Display the initial attributes of the objects, on different lines, in 10 digits placeholders using * as 
+filling character. The denominator will be left aligned while the nominator will pe positioned 
+in the right part of the displaying field. Using an accesor method display the value of icount as 
+a signed integer, on 15 characters, left aligned, using ’$’ as filling character. Perform the
+operations implemented with friend functions initializing another four objects with the 
+obtained results. Display the data (denominator/nominator) by overloading the output (<<, 
+insertion) operator and the counter (as a signed integer, on 20 characters, right aligned, using 
+’#’ as filling character) after the last operation. Simplify the results and display the resulting 
+values as fixed float numbers with 4 digits precision
+gr 2012*/
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+class Fraction
+{
+protected:
+    int a;
+    int b;
+public:
+    static int icount;
+    Fraction()
+    {
+        a = 0;
+        b = 1;
+        icount++;
+    }
+    Fraction(int a, int b)
+    {
+        if (b == 0)
+        {
+            cout << "FRACTIE IMPOSIBILA!";
+            exit(1);
+        }
+        this->a = a;
+        this->b = b;
+        icount++;
+    }
+    ~Fraction()
+    {
+        icount--;
+    }
+
+    void setA(int a)
+    {
+        this->a = a;
+    }
+    void setB(int b)
+    {
+        if (b == 0)
+        {
+            cout << "FRACTIE IMPOSIBILA!";
+            exit(1);
+        }
+        this->b = b;
+    }
+    int getA()
+    {
+        return a;
+    }
+    int getB()
+    {
+        return b;
+    }
+
+    int CMMDC()
+    {
+        int a1 = a;
+        int b1 = b;
+        int r = a1 % b1;
+        while (r)
+        {
+            a1 = b1;
+            b1 = r;
+            r = a1 % b1;
+        }
+        return b1;
+    }
+    Fraction simplify()
+    {
+        Fraction rez(a, b);
+        int div;
+        do
+        {
+            div = rez.CMMDC();
+            rez.a /= div;
+            rez.b /= div;
+        } while (div != 1);
+        return rez;
+    }
+    friend Fraction add_fraction(Fraction f1, Fraction f2);
+    friend Fraction subtract_fraction(Fraction f1, Fraction f2);
+    friend Fraction multiply_fraction(Fraction f1, Fraction f2);
+    friend Fraction divide_fraction(Fraction f1, Fraction f2);
+    Fraction operator+=(Fraction x);
+    Fraction operator-=(Fraction x);
+    Fraction operator*=(Fraction x);
+    Fraction operator/=(Fraction x);
+    friend ostream &operator<<(ostream& out, Fraction ob) {
+        out << setw(10) << setfill('/') << left << ob.getA() << right << ob.getB() << '\n';
+        return out;
+    }
+    friend istream &operator>> (istream& in, Fraction& ob) {
+        int a, b;
+        cout << "\nIntroduceti numaratorul si numitorul: ";
+        in >> a >> b;
+        ob.setA(a);
+        ob.setB(b);
+        return in;
+    }
+
+};
+
+int Fraction::icount;
+class Fraction_ext : public Fraction
+{
+public:
+    Fraction_ext(int x, int y) : Fraction(x, y) {}
+    Fraction_ext(Fraction x) : Fraction(x) {}
+
+    Fraction operator++(int) {
+        a++;
+        return *this;
+    };
+    Fraction operator--(int) {
+        a--;
+        return *this;
+    };
+    Fraction operator++() {
+        Fraction tmp = *this;
+        a++;
+        return tmp;
+    };
+    Fraction operator--() {
+        Fraction tmp = *this;
+        a--;
+        return tmp;
+    };
+    friend ostream& operator<<(ostream& out, Fraction_ext ob) {
+        out.setf(ios::showpos);    
+        out.width(20);
+        out.fill('#');
+        out <<right<< ob.getA() << "/" << ob.getB() << '\n';
+        return out;
+    }
+    friend istream& operator>> (istream& in, Fraction_ext& ob) {
+        int a, b;
+        cout << "\nIntroduceti numaratorul si numitorul: ";
+        in >> a >> b;
+        ob.setA(a);
+        ob.setB(b);
+        return in;
+    }
+};
+
+Fraction divide_fraction(Fraction f1, Fraction f2)
+{
+    Fraction rez;
+    //multiply with reciprocal
+    rez.b = f1.b * f2.a;
+    rez.a = f1.a * f2.b;
+    return rez;
+}
+Fraction multiply_fraction(Fraction f1, Fraction f2)
+{
+    Fraction rez;
+    rez.b = f1.b * f2.b;
+    rez.a = f1.a * f2.a;
+    return rez;
+
+}
+Fraction subtract_fraction(Fraction f1, Fraction f2)
+{
+    Fraction rez;
+    rez.b = f1.b * f2.b;
+    rez.a = f1.a * f2.b - f2.a * f1.b;
+    return rez;
+}
+Fraction add_fraction(Fraction f1, Fraction f2)
+{
+    Fraction rez;
+    rez.b = f1.b * f2.b;
+    rez.a = f1.a * f2.b + f2.a * f1.b;
+    return rez;
+
+}
+Fraction Fraction::operator+=(Fraction x)
+{
+    return add_fraction(*this, x);
+}
+Fraction Fraction::operator-=(Fraction x)
+{
+    return subtract_fraction(*this, x);
+}
+Fraction Fraction::operator*=(Fraction x)
+{
+    return multiply_fraction(*this, x);
+}
+Fraction Fraction::operator/=(Fraction x)
+{
+    return divide_fraction(*this, x);
+}
+
+int main()
+{
+    Fraction f1(14, 35);
+    cout.setf(ios::showpos);
+    cout << "\nNumar obiecte fractie: " <<setw(15)<<left<<setfill('$') << Fraction::icount;
+    cin >> f1;
+    Fraction f2 = f1.simplify();
+    Fraction sum = add_fraction(f1, f2);
+
+    cout << f1;
+    cout << f2;
+
+    cout << "\nAdunare: " << sum;
+    sum = subtract_fraction(f1, f2);
+    cout << "\nScadere: " << sum;
+    sum = multiply_fraction(f1, f2);
+    cout << "\nInmultire: " << sum;
+    sum = divide_fraction(f1, f2);
+    cout << "\nImpartire: " << sum;
+    sum = f1 += f2;
+    cout << "\nAdunare: " << sum;
+    sum = f1 -= f2;
+    cout << "\nScadere: " << sum;
+    sum = f1 *= f2;
+    cout << "\nInmultire: " << sum;
+    sum = f1 /= f2;
+    cout << "\nImpartire: " << sum;
+    Fraction_ext fractie(f1);
+    fractie++;
+    cout << "\nIncrementare fractie 1: " << fractie;
+    --fractie;
+    cout << "\nIncrementare fractie 1:" << fractie;
+    
+    return 0;
+}

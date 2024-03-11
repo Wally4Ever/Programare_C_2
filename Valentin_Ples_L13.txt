@@ -1,0 +1,459 @@
+
+﻿/*Să se scrie un program care foloseşte metoda seekg( ) pentru poziţionare la mijlocul fişierului
+si apoi afişează conţinutul fişierului începând cu această poziţie. Numele fişierului se citeste
+din linia de comandă.
+gr 2012*/
+#include <iostream>
+#include <fstream>
+using namespace std;
+int main(int argc, char* argv[])
+{
+        char car;
+        if (argc != 2) {
+                cout << "Specificati numele fisierului! \n";
+                exit(1);
+        }
+        ofstream out;
+        out.open(argv[1]);
+        if (!out) {
+                cout << "Nu poate deschide fisierul";
+                exit(1);
+        }
+        cout << "Introduceti un $ pentru a opri citirea\n";
+        do {
+                cin.get(car);
+                out.put(car);
+        } while (car!= '$');
+        out.close();
+        ifstream in;
+        in.open(argv[1]);
+        cout << "Afisare incepand cu jumatatea fisierului: \n";
+        in.seekg(0, ios::end);
+        int size = in.tellg() / 2;
+        in.seekg(size, ios::beg);
+        while (in>>car)
+        {
+                cout << car<<' ';
+        }
+        return 0;
+}
+
+﻿/*Write a program that uses the write( ) method for writing some character arrays into a file.
+Display the file’s content using the get( ) method. The filename is read from the keyboard.
+Valentin Ples
+gr 2012*/
+#define DIM 20
+#include <iostream>
+#include <fstream>
+using namespace std;
+int main()
+{
+        char *car=new char[DIM], name[DIM];
+        cout << "Introdu numele fisierului: ";
+        cin.getline(name, DIM);
+
+        ofstream out;
+        out.open(name);
+        if (!out)
+        {
+                cout << "Nu poate deschide fisierul";
+                exit(1);
+        }
+
+        cin.getline(car, DIM);
+        out.write(car, DIM);
+
+
+        out.close();
+        ifstream in;
+        in.open(name);
+
+        cout << "Afisarea fisierului: \n";
+        while (in.get(car, DIM))
+        {
+                cout << car << ' ';
+        }
+        in.close();
+        delete []car;
+        return 0;
+}
+/*Write a C++ application that reads a file's content usfing the read( ) method.
+The obtained data is displayed on the screen. Check the system's state after each reading operation.
+The filename is read from the command lfine.
+Valentfin Ples gr 2012*/
+
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+int main(int argc, char* argv[])
+{
+
+        if (argc != 2) {
+                cout << "Enter the file name next time!";
+                cin.get();
+                exit(1);
+        }
+
+        ifstream fin;
+        fin.open(argv[1]);
+        if (fin) 
+        {
+                fin.seekg(0, fin.end);
+                int length = fin.tellg();
+                fin.seekg(0, fin.beg);
+
+                char* buf = new char[length];
+                fin.read(buf, length);
+
+                cout.write(buf, length);
+                delete[] buf;
+                fin.close();
+        }
+
+        return 0;
+}
+/*Write a C++ application that opens a binary file for reading. The filename is read from the
+keyboard. Display a message if the file doesn't exist and ask the user to re-enter the filename.
+Assuming that the file contains some agenda records (name, city, phone number) overload the insertion
+and extraction operators for reading the file's content and for displaying it on the screen.
+Valentin Ples gr 2012*/
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+#define DIM 30
+
+class Person
+{
+protected:
+        char* name = new char[DIM];
+        char* city = new char[DIM];
+        char* phone = new char[10];
+public:
+        void setName(char* name) {
+                strcpy(this->name, name);
+        }
+
+        void setCity(char* city) {
+                strcpy(this->city, city);
+        }
+
+        void setPhone(char* phone) {
+                if (strlen(phone) > 11)
+                {
+                        cout << "Wrong phone number!";
+                        exit(1);
+                }
+                strcpy(this->phone, phone);
+        }
+
+        char* getName() {
+                return name;
+        }
+
+        char* getCity() {
+                return city;
+        }
+
+        char* getPhone() {
+                return phone;
+        }
+        friend ostream& operator <<(ostream& stream, Person& object);
+        friend istream& operator >>(istream& stream, Person& object);
+        ~Person() {
+                delete[]name;
+                delete[]city;
+        }
+};
+
+ostream& operator <<(ostream& str, Person& ob) 
+{
+        str << "Persoana: ";
+        str << "\nName: " << ob.getName();
+        str << "\nCity: " << ob.getCity();
+        str << "\nPhone number: " << ob.getPhone();
+        return str;
+}
+
+istream& operator >>(istream& str, Person& ob) 
+{
+        ifstream in;
+        char* d = new char[DIM];
+        int size = 0;
+        in.open("data.txt", ios::in | ios::binary);
+        if (in.is_open()) 
+        {
+                while (!in.eof()) 
+                {
+                        in.getline(d, DIM);
+                        ob.setName(d);
+                        in.getline(d, DIM);
+                        ob.setCity(d);
+                        in.getline(d, DIM);
+                        ob.setPhone(d);
+                };
+        }
+        else
+                cout << "File not opened!";
+        in.close();
+        return str;
+}
+int main() 
+{
+        
+        Person om;
+        cin >> om;
+        cout << om;
+
+        return 0;
+}
+/*Consider the Fraction class that has two private attributes a and b for the nominator and 
+denominator and two corresponding setter and getter methods. Declare a method 
+named simplify( ) that simplifies a fraction. Define an explicit constructor without parameters 
+that initializes a with 0 and b with 1 and another explicit constructor that receives two 
+parameters representing the values of the nominator and denominator. This constructor 
+verifies if the fraction can be defined (b != 0). Overload the addition, subtraction, 
+multiplication and division operators (+, -, *, /) using member methods that simplify (if 
+necessary) the obtained results.
+Overload the input (>>, extraction) and output (<<, insertion) operators using friend functions 
+that allow reading and writing the data related to an entire object. Instantiate two Fraction 
+objects with data read from the keyboard. Display the initial attributes of the objects by usign 
+the insertion operator. Read another four objects using the extraction operator. Perform the 
+operations implemented with member methods (the addition and subtraction of the first two 
+objects, the multiplication and division of the last ones) and store the results into another four 
+objects. Display the results. Write into a file the original values and the obtained results, on 
+different rows
+Valentin Ples gr 2012*/
+#include <iostream>
+#include <iomanip>
+#include <fstream>
+using namespace std;
+
+class Fraction
+{
+protected:
+    int a;
+    int b;
+public:
+    static int icount;
+    Fraction()
+    {
+        a = 0;
+        b = 1;
+        icount++;
+    }
+    Fraction(int a, int b)
+    {
+        if (b == 0)
+        {
+            cout << "FRACTIE IMPOSIBILA!";
+            exit(1);
+        }
+        this->a = a;
+        this->b = b;
+        icount++;
+    }
+    ~Fraction()
+    {
+        icount--;
+    }
+
+    void setA(int a)
+    {
+        this->a = a;
+    }
+    void setB(int b)
+    {
+        if (b == 0)
+        {
+            cout << "FRACTIE IMPOSIBILA!";
+            exit(1);
+        }
+        this->b = b;
+    }
+    int getA()
+    {
+        return a;
+    }
+    int getB()
+    {
+        return b;
+    }
+
+    int CMMDC()
+    {
+        int a1 = a;
+        int b1 = b;
+        int r = a1 % b1;
+        while (r)
+        {
+            a1 = b1;
+            b1 = r;
+            r = a1 % b1;
+        }
+        return b1;
+    }
+    Fraction simplify()
+    {
+        Fraction rez(a, b);
+        int div;
+        do
+        {
+            div = rez.CMMDC();
+            rez.a /= div;
+            rez.b /= div;
+        } while (div != 1);
+        return rez;
+    }
+    friend Fraction add_fraction(Fraction f1, Fraction f2);
+    friend Fraction subtract_fraction(Fraction f1, Fraction f2);
+    friend Fraction multiply_fraction(Fraction f1, Fraction f2);
+    friend Fraction divide_fraction(Fraction f1, Fraction f2);
+    Fraction operator+=(Fraction x);
+    Fraction operator-=(Fraction x);
+    Fraction operator*=(Fraction x);
+    Fraction operator/=(Fraction x);
+    friend ostream& operator<<(ostream& out, Fraction ob) {
+        out << setw(10) << setfill('/') << left << ob.getA() << right << ob.getB() << '\n';
+        return out;
+    }
+    friend istream& operator>> (istream& in, Fraction& ob) {
+        int a, b;
+        cout << "\nIntroduceti numaratorul si numitorul: ";
+        in >> a >> b;
+        ob.setA(a);
+        ob.setB(b);
+        return in;
+    }
+
+};
+
+int Fraction::icount;
+class Fraction_ext : public Fraction
+{
+public:
+    Fraction_ext(int x, int y) : Fraction(x, y) {}
+    Fraction_ext(Fraction x) : Fraction(x) {}
+
+    Fraction operator++(int) {
+        a++;
+        return *this;
+    };
+    Fraction operator--(int) {
+        a--;
+        return *this;
+    };
+    Fraction operator++() {
+        Fraction tmp = *this;
+        a++;
+        return tmp;
+    };
+    Fraction operator--() {
+        Fraction tmp = *this;
+        a--;
+        return tmp;
+    };
+    friend ostream& operator<<(ostream& out, Fraction_ext ob) {
+        out.setf(ios::showpos);
+        out.width(20);
+        out.fill('#');
+        out << right << ob.getA() << "/" << ob.getB() << '\n';
+        return out;
+    }
+    friend istream& operator>> (istream& in, Fraction_ext& ob) {
+        int a, b;
+        cout << "\nIntroduceti numaratorul si numitorul: ";
+        in >> a >> b;
+        ob.setA(a);
+        ob.setB(b);
+        return in;
+    }
+};
+
+Fraction divide_fraction(Fraction f1, Fraction f2)
+{
+    Fraction rez;
+    //multiply with reciprocal
+    rez.b = f1.b * f2.a;
+    rez.a = f1.a * f2.b;
+    return rez;
+}
+Fraction multiply_fraction(Fraction f1, Fraction f2)
+{
+    Fraction rez;
+    rez.b = f1.b * f2.b;
+    rez.a = f1.a * f2.a;
+    return rez;
+
+}
+Fraction subtract_fraction(Fraction f1, Fraction f2)
+{
+    Fraction rez;
+    rez.b = f1.b * f2.b;
+    rez.a = f1.a * f2.b - f2.a * f1.b;
+    return rez;
+}
+Fraction add_fraction(Fraction f1, Fraction f2)
+{
+    Fraction rez;
+    rez.b = f1.b * f2.b;
+    rez.a = f1.a * f2.b + f2.a * f1.b;
+    return rez;
+
+}
+Fraction Fraction::operator+=(Fraction x)
+{
+    return add_fraction(*this, x);
+}
+Fraction Fraction::operator-=(Fraction x)
+{
+    return subtract_fraction(*this, x);
+}
+Fraction Fraction::operator*=(Fraction x)
+{
+    return multiply_fraction(*this, x);
+}
+Fraction Fraction::operator/=(Fraction x)
+{
+    return divide_fraction(*this, x);
+}
+
+int main()
+{
+    Fraction f1(14, 35);
+    cout.setf(ios::showpos);
+    cout << "\nNumar obiecte fractie: " << setw(15) << left << setfill('$') << Fraction::icount;
+    cin >> f1;
+    Fraction f2 = f1.simplify();
+    Fraction sum = add_fraction(f1, f2);
+    ofstream out("afis.txt");
+    out << f1;
+    out << f2;
+
+    out << "\nAdunare: " << sum;
+    sum = subtract_fraction(f1, f2);
+    out << "\nScadere: " << sum;
+    sum = multiply_fraction(f1, f2);
+    out << "\nInmultire: " << sum;
+    sum = divide_fraction(f1, f2);
+    out << "\nImpartire: " << sum;
+    sum = f1 += f2;
+    out << "\nAdunare: " << sum;
+    sum = f1 -= f2;
+    out << "\nScadere: " << sum;
+    sum = f1 *= f2;
+    out << "\nInmultire: " << sum;
+    sum = f1 /= f2;
+    out << "\nImpartire: " << sum;
+    Fraction_ext fractie(f1);
+    fractie++;
+    out << "\nIncrementare fractie 1: " << fractie;
+    --fractie;
+    out << "\nIncrementare fractie 1:" << fractie;
+
+    return 0;
+}

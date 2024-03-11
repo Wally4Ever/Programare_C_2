@@ -1,0 +1,1443 @@
+
+﻿/*
+    implementeze clasa Complex care supraîncarcă operatorii aritmetici cu scopul de a efectua adunări,
+    scăderi, inmulţiri şi împărţiri de numere complexe (folosind metode membre (+, -) și funcții friend (*, /)).
+gr 2012
+ */
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+class Complex 
+{
+    double re, im;
+    char* name;
+
+public:
+    Complex(double re = 1.0, double im = 1.0, char* name = (char*)"Unknown") 
+    {
+        this->re = re;
+        this->im = im;
+
+        this->name = new char[sizeof(name) + 1];
+        strcpy(this->name, name);
+    }
+    Complex(Complex const& x) 
+    {
+        re = x.re;
+        im = x.im;
+        this->name = new char[sizeof(x.name) + 1];
+        strcpy(name, x.name);
+    }
+    ~Complex() 
+    { 
+        delete[] name; 
+    }
+
+    double getR() 
+    { 
+        return re; 
+    }
+    double getI() 
+    { 
+        return im; 
+    }
+    void setR(double x) 
+    { 
+        re = x; 
+    }
+    void setI(double x) 
+    {
+        im = x;
+    }
+    char* getName()
+    {
+        return name; 
+    }
+    void setName(char* x)
+    { 
+        strcpy(name, x); 
+    }
+
+    void operator=(Complex const& x) 
+    {
+        re = x.re;
+        im = x.im;
+        this->name = new char[sizeof(x.name) + 1];
+        strcpy(name, x.name);
+    }
+
+    Complex operator+(Complex x) 
+    {
+        Complex y;
+        y.setR(re + x.re);
+        y.setI(im + x.im);
+        return y;
+    }
+    Complex operator-(Complex x) 
+    {
+        Complex y;
+        y.setR(re - x.re);
+        y.setI(im - x.im);
+        return y;
+    }
+    friend Complex operator*(Complex a, Complex b);
+    friend Complex operator/(Complex a, Complex b);
+};
+
+int main() 
+{
+    Complex nr1, nr2;
+    Complex complex_sum, complex_dif, complex_prod, complex_quot;
+    double re, im;
+
+    cout << "Enter two complex numbers (real + imaginary):\n";
+    cout << "Number #1: ";
+    cin >> re >> im;
+    nr1.setR(re);
+    nr1.setI(im);
+    cout << "Number #2: ";
+    cin >> re >> im;
+    nr2.setR(re);
+    nr2.setI(im);
+ 
+    complex_sum = nr1 + nr2;
+    complex_dif = nr1 - nr2;
+    complex_prod = nr1 * nr2;
+    complex_quot = nr1 / nr2;
+
+    cout << "\nResults of complex number operations:\n";
+    cout << "\nSum: " << complex_sum.getR() << " + " << complex_sum.getI() << "i";
+    cout << "\nDifference: " << complex_dif.getR() << " + " << complex_dif.getI() << "i";
+    cout << "\nProduct: " << complex_prod.getR() << " + " << complex_prod.getI() << "i";
+    cout << "\nQuotient: " << complex_quot.getR() << " + " << complex_quot.getI() << "i";
+}
+
+Complex operator*(Complex a, Complex b) {
+    Complex y;
+    y.setR(a.re * b.re);
+    y.setI(a.im * b.im);
+    return y;
+}
+Complex operator/(Complex a, Complex b) {
+    Complex y;
+    y.setR(a.re / b.re);
+    y.setI(a.im / b.im);
+    return y;
+}
+/*Pornind de la exemplul 1b, modificati supraincarcarea operatorului  , care sa permita scaderea a mai multor 
+aparitii din sirul initial. Analizati functionarea aplicatiei.
+gr 2012*/
+#define _CRT_SECURE_NO_WARNINGS
+#define MAX 31
+#include <cstring>
+#include <iostream>
+using namespace std;
+
+class String 
+{
+    char str[MAX];
+
+public:
+    String() = default;
+    String(char x[MAX]) 
+    {
+        strcpy(str, x); 
+    }
+
+    char* getString() 
+    { 
+        return str; 
+    }
+
+    friend String operator-(String& x1, String& x2);
+
+    String operator+(String x1) 
+    {
+        String res;
+        strcpy(res.str, str);
+        strcat(res.str, x1.str);
+        return res;
+    }
+
+    char operator[](int pos) 
+    {
+        char res;
+        res = str[pos];
+        return res;
+    }
+
+ 
+};
+
+String operator-(String& x1, String& x2) 
+{
+    char* k = strstr(x1.str, x2.str);
+
+    if (!k)
+        return String(x1.str);
+  
+    char buf[MAX];
+    while (k)
+    {
+        strncpy(buf, x1.str, k - x1.str);
+        strcpy(buf + (k - x1.str), k + strlen(x2.str));
+
+        k = strstr(buf, x2.str);
+    }
+
+    return String(buf);
+}
+
+int main() 
+{
+    char s[MAX];
+
+    cout << "First string: ";
+    cin.getline(s, sizeof(s));
+    String ob1(s);
+
+    cout << "Second string: ";
+    cin.getline(s, sizeof(s));
+    String ob2(s);
+
+    String ob3;
+    ob3 = ob1 + ob2;
+
+    cout << "\nAdding: " << ob3.getString();
+    cout << "\nEnter a string to subtract: ";
+    cin.getline(s, sizeof(s));
+    String ob4(s);
+
+    String ob5 = ob3 - ob4;
+    cout << "\nString after subtraction: " << ob5.getString();
+    char c = ob5[0];
+    cout << "\nFirst character: " << c;
+}
+/*Pornind de la exemplul 4b, introduceti metode de tip set la atributele clasei Persoana, astfel incat introducerea 
+datelor sa fie facuta cu metoda introdu( ) si metode setter in loc de constructor. Preluati optiunile cu 
+confirmare, la fel ca la exemplul 4a. Continuati la optiune gresita dand un mesaj adecvat. Asigurati consistenta 
+supraincarcarii operatorilor de indexare (cand nu se gaseste obiectul). Considerati atributul nume de tip char *,
+alocarea spatiului fiind facuta in constructori. Definiti copy constructorul si supraincarcati operatorul de 
+asignare in cadrul clasei Persoana. Introduceti destructori in ambele clase. Considerati acum procesul de 
+sortare dupa aceleasi chei ca si la cautare cu afisarea rezultatelor in ordine descrescatoare. Verificati 
+functionalitatea elementelor introduse.
+gr 2012*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <string.h>
+#include <iostream>
+using namespace std;
+
+const int maxi = 31;
+const int dim = 5;
+
+class Persoana 
+{
+    char name[maxi];
+    double kg;
+    int age;
+
+public:
+    Persoana() 
+    {
+        strcpy(name, "Missing");
+        kg = 0.0;
+        age = 0;
+    }
+
+    Persoana(char* name, double kg, int age) 
+    {
+        strcpy(this->name, name);
+        this->kg = kg;
+        this->age = age;
+    }
+
+    Persoana(const Persoana& x) 
+    {
+        strcpy(name, x.name);
+        kg = x.kg;
+        age = x.age;
+    }
+
+    void operator=(Persoana x) 
+    {
+        strcpy(name, x.name);
+        kg = x.kg;
+        age = x.age;
+    }
+
+    char* getName()
+    {
+        return name; 
+    }
+    double getKg() 
+    { 
+        return kg; 
+    }
+    int getAge() 
+    { 
+        return age; 
+    }
+
+    void setName(char* x) 
+    {
+        strcpy(name, x); 
+    }
+    void setKg(double x) 
+    { 
+        kg = x; 
+    }
+    void setAge(int x) 
+    { 
+        age = x; 
+    }
+
+    void display()
+    {
+        cout << "\nName: " << name;
+        cout << "\nWeight: " << kg;
+        cout << "\nAge: " << age;
+    }
+};
+
+class Analize 
+{
+    Persoana* p;
+    int n;
+
+public:
+    Analize() 
+    {
+        p = new (nothrow) Persoana[dim];
+        n = dim;
+    }
+
+    Analize(int nr) 
+    {
+        p = new (nothrow) Persoana[nr];
+        n = nr;
+    }
+
+    void enter() 
+    {
+        char name[maxi], c;
+        double kg;
+        int age;
+
+        for (int j=0; j < n; j++) 
+        {
+            cout << "\n#" << j + 1 << "\n";
+            //nume
+            c = 'n';
+            do 
+            {
+                cout << "\nName: ";
+                cin >> name;
+                if (strlen(name) > maxi) 
+                {
+                    cout << "Too long!\n";
+                    cin >> name;
+                }
+                cout << "Set name as " << name << "? y/n: ";
+                cin >> c;
+            } while (c != 'y');
+            //greutate
+            c = 'n';
+            do 
+            {
+                cout << "\nWeight: ";
+                cin >> kg;
+                if (kg < 0) 
+                {
+                    cout << "Wrong!\n";
+                    cin >> kg;
+                }
+                cout << "Set kg to " << kg << "? y/n: ";
+                cin >> c;
+            } while (c != 'y');
+            // varsta
+            c = 'n';
+            do
+            {
+                cout << "\nAge: ";
+                cin >> age;
+                if (age < 0) 
+                {
+                    cout << "Wrong!\n";
+                    cin >> age;
+                }
+                cout << "Set age to " << age << "? y/n: ";
+                cin >> c;
+            } while (c != 'y');
+
+            p[j].setName(name);
+            p[j].setKg(kg);
+            p[j].setAge(age);
+        }
+    }
+
+    void operator[](char* name)
+    {
+        bool ok = false;
+
+        for (int j = 0; j < n; j++)
+            if (strcmp(name, p[j].getName()) == 0)
+            {
+                p[j].display();
+                ok = true;
+            }
+        if (!ok)
+            cout << "\nNot found!";
+    }
+
+    void operator[](double kg) 
+    {
+        bool ok = false;
+
+        for (int j = 0; j < n; j++)
+            if (kg == p[j].getKg())
+            {
+                p[j].display();
+                ok = true;
+            }
+
+        if (!ok)
+            cout << "\nNot found!";
+    }
+
+    void operator[](int age) 
+    {
+        bool ok = false;
+
+        for (int j = 0; j < n; j++)
+            if (age == p[j].getAge())
+            {
+                p[j].display();
+                ok = true;
+            }
+
+        if (!ok)
+            cout << "\nNot found!";
+    }
+};
+
+int main() 
+{
+    int n, age;
+    char c, name[maxi];
+    double kg;
+
+    cout << "No. of people: ";
+    cin >> n;
+    Analize a(n);
+    a.enter();
+
+    c = 0;
+    while (c != 'e') 
+    {
+        cout << "\nSearch based on age(a), weight(w), name(n) or want to exit(e): ";
+        cin >> c;
+
+        switch (tolower(c)) 
+        {
+        case 'a':
+            cout << "\nAge: ";
+            cin >> age;
+            a[age];
+            break;
+
+        case 'w':
+            cout << "\nkg: ";
+            cin >> kg;
+            a[kg];
+            break;
+
+        case 'n':
+            cout << "\nName: ";
+            cin >> name;
+            a[name];
+            break;
+
+        case 'e':
+            return 0;
+            break;
+
+        default:
+            cout << "\nWrong input\n";
+        }
+    }
+    return 0;
+}
+﻿/*Pornind de la exemplul 5 referitor la matrici, verificati/implementati următoarele cerințe:
+a. citirea/scrierea unei matrici, unde dimensiunile sunt preluate de la tastatură
+b. testați toți operatorii supraîncărcați. Implementati variante in care se folosesc metode membre la 
+supraincarcare.
+c. afișați elementele de pe diagonala principală și secundară
+d. implementati operatiile cu matrici folsind metode membr
+gr 2012*/
+#include <iostream>
+using namespace std;
+
+const int lines = 2;
+const int col = 3;
+
+class Matrix 
+{
+    int rows;
+    int cols;
+    int* el;
+
+public:
+    Matrix();
+    Matrix(int rows, int cols);
+    Matrix(const Matrix&);
+    ~Matrix() { delete[] el; }
+
+    int& operator()(int row, int col);
+    Matrix& operator=(const Matrix&);
+    Matrix operator+(Matrix&);
+    Matrix operator-(Matrix&);
+    Matrix operator*(Matrix&);
+
+    int getRows() 
+    {
+        return rows; 
+    }
+    int getCols() 
+    { 
+        return cols; 
+    }
+    void init(int r, int c);
+    void read();
+    void display();
+};
+
+Matrix::Matrix() : rows(lines), cols(col) 
+{
+    el = new (nothrow) int[rows * cols];
+}
+
+Matrix::Matrix(int r, int c) : rows(r), cols(c) 
+{
+    el = new (nothrow) int[rows * cols];
+}
+
+Matrix::Matrix(const Matrix& m) : rows(m.rows), cols(m.cols) 
+{
+    int n = rows * cols;
+    if (el)
+        delete[] el;
+    el = new (nothrow) int[n];
+    for (int i = 0; i < n; i++)
+        el[i] = m.el[i];
+}
+
+void Matrix::init(int r, int c) 
+{
+    rows = r;
+    cols = c;
+    if (el)
+        delete[] el;
+    el = new (nothrow) int[rows * cols];
+}
+
+int& Matrix::operator()(int row, int col) 
+{
+    return el[row * cols + col]; 
+}
+Matrix& Matrix::operator=(const Matrix& m) 
+{
+    if (this != &m) {
+        delete[] el;
+        rows = m.rows;
+        cols = m.cols;
+        int n = rows * cols;
+        el = new (nothrow) int[n];
+        for (int i = 0; i < n; i++)
+            el[i] = m.el[i];
+    }
+    return *this;
+}
+
+Matrix Matrix::operator+(Matrix& p) 
+{
+    Matrix m(p.rows, p.cols);
+    for (int r = 0; r < p.rows; ++r)
+        for (int c = 0; c < p.cols; ++c)
+            m(r, c) = p(r, c) + el[r * cols + c];
+    return m;
+}
+Matrix Matrix::operator-(Matrix& p) 
+{
+    Matrix q = *this;
+    Matrix m(p.rows, p.cols);
+    for (int r = 0; r < p.rows; ++r)
+        for (int c = 0; c < p.cols; ++c)
+            m(r, c) = p(r, c) - q(r, c);
+    return m;
+}
+Matrix Matrix::operator*(Matrix& p) 
+{
+    Matrix q = *this;
+    Matrix m(p.rows, q.cols);
+    for (int r = 0; r < p.rows; ++r)
+        for (int c = 0; c < q.cols; ++c) {
+            m(r, c) = 0;
+            for (int i = 0; i < p.cols; ++i)
+                m(r, c) += p(r, i) * q(i, c);
+        }
+    return m;
+}
+
+void Matrix::read() 
+{
+    for (int i = 0; i < rows; i++)
+        for (int j = 0; j < cols; j++) 
+        {
+            cout << "[" << i+1 << "][" << j+1 << "] = ";
+            cin >> el[cols * i + j];
+        }
+}
+void Matrix::display() 
+{
+    for (int i = 0; i < rows; i++) 
+    {
+        for (int j = 0; j < cols; j++)
+            cout << el[cols * i + j] << "\t";
+        cout << endl;
+    }
+}
+
+int main() 
+{
+    int i, j;
+
+    cout << "Dim of matrix: ";
+    cin >> i >> j;
+    Matrix m(i, j);
+
+    cout << "\nMatrix:\n";
+    m.read();
+
+    int l, c;
+    cout << "\nOperator(). Give a position: ";
+    cin >> l >> c;
+    if ((l >= 1 && l <= m.getRows()) && (c >= 1 && c <= m.getCols()))
+        cout << "Element m[" << l << "][" << c << "] = " << m(l - 1, c - 1) << endl;
+    else
+        cout << "Invalid indices!" << endl;
+
+
+    cout << "\nCopy constructor:" << endl;
+    Matrix copy = m;
+    cout << "\"Copied\" matrix:" << endl;
+    copy.display();
+  
+
+    cout << "\nNew matrix object:\n";
+    Matrix n(lines, col);
+    cout << "\nEnter matrix:\n";
+    n.read();
+    cout << "\n\"New\" matrix is:" << endl;
+    n.display();
+
+    cout << "\nOperator=, copying \"first\" matrix in \"previous\" matrix\n";
+    if (m.getRows() == n.getRows() && m.getCols() == n.getCols()) 
+    {
+        n = m;
+        m.display();
+    }
+    else
+        cout << "\nCan't be copied (different dimensions)\n";
+
+    cout << "\nNew matrix \"m1\":\n";
+    Matrix m1(lines, col);
+    cout << "Enter matrix:";
+    m1.read();
+    cout << "\n\"m1\" is:\n";
+    m1.display();
+
+    Matrix m2(lines, col);
+    cout << "\nOperator+\n";
+    if (m.getRows() == m1.getRows() && m.getCols() == m1.getCols())
+    {
+        m2 = m + m1;
+        cout << "First + m1:\n";
+        m2.display();
+    }
+    else
+        cout << "\nDiff dim";
+
+    cout << "\nOperator-\n";
+    if (m.getRows() == m1.getRows() && m.getCols() == m1.getCols())
+    {
+        m2 = m - m1;
+        cout << "First - m1:\n";
+        m2.display();
+    }
+    else
+        cout << "\nDiff dim";
+
+    cout << "\nEnter matrix \"m3\" (square matrix): "<< endl;
+    cin >> l;
+    c = l;
+    Matrix m3;
+    m3.read();
+    cout << endl << "Matrix \"m3\" is:" << endl;
+    m3.display();
+
+    cout << "\nOperator*\n";
+    if (m.getCols() == m3.getRows()) 
+    {
+        Matrix m4(m.getRows(), m3.getCols());
+        m4 = m * m3;
+        cout << "First * m3:\n";
+        m4.display();
+    }
+    else
+        cout << "Matrices can't be multiplied (diff dim)\n";
+}
+﻿/*Să se supraîncarce operatorul [ ] astfel încât, folosit fiind asupra unor obiecte din clasa Departament, ce 
+contine un tablou de obiecte de tip Angajat (clasa Angajat contine variabilele nume (şir de caractere) şi salariu 
+(double)), să returneze toată informaţia legată de angajatul al cărui număr de ordine este trimis ca parametru.
+gr 2012*/
+#include <iostream>
+
+using namespace std;
+
+class Departament;
+
+class Angajat 
+{
+private:
+        char name[20];
+        float salar;
+public:
+        friend class Departament;
+        Angajat() {};
+        void display();
+        char* getN() 
+        {
+                return name;
+        }
+        float getS() 
+        {
+                return salar;
+        }
+};
+
+class Departament 
+{
+private:
+        int n;
+        Angajat* ang;
+
+public:
+        Departament(int nr);
+        void read();
+        Angajat operator[](int);
+};
+
+void Departament::read() 
+{
+        for (int i = 0; i < n; i++)
+        {
+                cout << "\Name: ";
+                cin >> ang[i].name;
+                cout << "Salar: ";
+                cin >> ang[i].salar;
+        }
+}
+
+void Angajat::display() 
+{
+        cout << "\nName: " << name << "\n";
+        cout << "salar: " << salar;
+}
+
+Departament::Departament(int nr) 
+{
+        n = nr;
+        ang = new Angajat[n];
+}
+
+Angajat Departament::operator[](int index) 
+{
+        return ang[index - 1];
+}
+
+
+int main() 
+{
+
+        int nr, ind;
+        cout << "Nr. angajati: ";
+        cin >> nr;
+        Departament ob(nr);
+        ob.read();
+
+        cout << "\nDetalii despre angajatul #";
+        cin >> ind;
+
+        if ((ind >= 1) && (ind <= nr)) 
+                ob[ind].display();
+        else
+                cout << "\nWrong!";
+
+        return 0;
+}
+﻿/*Să se supraîncarce operatorii new şi delete într-una din clasele cu care s-a lucrat anterior, în vederea alocarii şi 
+eliberarii de memorie pentru un obiect din clasa respectivă. 
+gr 2012*/
+#include <cstdlib>
+#include <cstring>
+
+class Angajat 
+{
+    char* name;
+    float salar;
+
+public:
+    ~Angajat() 
+    { 
+        delete[] name; 
+    }
+
+    char* getName() 
+    { 
+        return name; 
+    }
+    void setName(char* x) 
+    {
+        delete[] name;
+        name = new char[sizeof(x) + 1];
+        strcpy(name, x);
+    }
+    float getS() 
+    { 
+        return salar; 
+    }
+    void setS(float x) 
+    { 
+        salar = x; 
+    }
+    void setAngajat(Angajat x) 
+    {
+        setName(x.name);
+        setS(x.salar);
+    }
+
+    void* operator new(size_t size) 
+    {
+        void* p = malloc(size);
+        return p;
+    }
+
+    void operator delete(void* p) 
+    { 
+        free(p); 
+    }
+};
+﻿/*Să se scrie programul care considera o clasa MyClass cu trei atribute de tip int. Clasa considera pe baza 
+mecanismului de supraincarcare metode publice int myFunction(…), care în funcţie de numărul de parametri 
+primiţi, returnează fie valoarea primită (1 parametru), fie produsul variabilelor de intrare (0-toti, 2, 3
+parametrii). Instantiati un obiect din clasa in main(), setati atributele cu metode setter adecvate din clasa si 
+afisati valorile la apelurile metodelor.
+gr 2012*/
+
+#include <iostream>
+using namespace std;
+
+class MyClass 
+{
+        int a, b, c;
+
+public:
+        int myFunction(int val) 
+        { 
+                return val; 
+        }
+        int myFunction() 
+        { 
+                return a * b * c; 
+        }
+        int myFunction(int x, int y) 
+        { 
+                return x * y; 
+        }
+        int myFunction(int x, int y, int z) 
+        { 
+                return x * y * z; 
+        }
+
+        void setA(int x) { a = x; }
+        void setB(int x) { b = x; }
+        void setC(int x) { c = x; }
+};
+
+int main() 
+{
+        MyClass ob;
+        int a, b, c;
+
+        cout << "Enter 3 numbers: ";
+        cin >> a >> b >> c;
+        ob.setA(a);
+        ob.setB(b);
+        ob.setC(c);
+
+        cout << "\n0 params: " << ob.myFunction();
+        cout << "\n1 param: " << ob.myFunction(c);
+        cout << "\n2 params: " << ob.myFunction(a, c);
+        cout << "\n3 params: " << ob.myFunction(a, b, c);
+}
+﻿/*Să se scrie programul care utilizează o clasă numită Calculator şi care are în componenţa sa metodele publice
+supraincarcate:
+- int calcul(int x) care returnează pătratul valorii primite;
+- int calcul(int x, int y) care returnează produsul celor două valori primite;
+- double calcul(int x, int y, int z) care returnează rezultatul înlocuirii în formula f(x,y,z) = (x-y)(x+z)/2. a
+valorilor primite;
+Programul primeşte din linia de comandă toţi parametrii necesari pentru toate aceste metode ale clasei.
+Considerați și cazul în care toate aceste metode sunt statice.
+*/
+#include <iostream>
+
+using namespace std;
+
+class Calculator 
+{
+public:
+    static int calcul(int x) 
+    { 
+        return x * x; 
+    }
+    static int calcul(int x, int y) 
+    {
+        return x * y; 
+    }
+    static double calcul(int x, int y, int z) 
+    {
+        return (x - y) * (x + z) / 2.0f;
+    }
+};
+
+int main() 
+{
+    Calculator calc;
+    int x, y, z;
+
+    cout << "Enter 3 numbers: ";
+    cin >> x >> y >> z;
+
+    cout << "\n1 param: " << calc.calcul(x);
+    cout << "\n2 params: " << calc.calcul(x, y);
+    cout << "\n3 params: " << Calculator::calcul(x, y, z); //metoda statica=>se poate apela functia fara obiect
+}
+﻿/*Să se definească clasa Student având ca date membre private: numele (pointer șir de caractere), note (pointer de 
+tip întreg) și nr_note (int). Clasa mai conține un constructor cu parametri, un constructor de copiere/move, o 
+metoda de supraîncărcare a operatorului de atribuire, o metodă de setare a notelor, o metodă de afișare a 
+atributelor și un destructor. Să se instanțieze obiecte folosind constructorul cu parametri, un alt obiect ca si 
+clona va fi obtinut folosind constructorul de copiere, afișând de fiecare data atributele obiectului creat. 
+Realizați o operație de copiere a unui obiect în alt obiect, ambele fiind create in prealabil. Afișati rezultatul 
+copierii.
+gr 2012*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <string.h>
+#include <iostream>
+
+using namespace std;
+
+class Student 
+{
+    char* name;
+    int* note;
+    int nr_note;
+
+public:
+    Student(char* name = (char*)"Lipsa", int* note = {}, int nr_note = 0) 
+    {
+        this->name = new char[strlen(name) + 1];
+        strcpy(this->name, name);
+
+        this->note = note;
+
+        this->nr_note = nr_note;
+    }
+
+    Student(Student& x) 
+    {
+        delete[] name;
+        name = new char[strlen(x.name) + 1];
+        strcpy(name, x.name);
+
+        nr_note = x.nr_note;
+
+        delete[] note;
+        note = x.note;
+    }
+
+    ~Student() 
+    {
+        delete[] name;
+    }
+
+    void operator=(Student& x) 
+    {
+        delete[] name;
+        name = new char[strlen(x.name) + 1];
+        strcpy(name, x.name);
+
+        nr_note = x.nr_note;
+
+        delete[] note;
+        note = x.note;
+    }
+
+    void setNote(int n, int* m) 
+    {
+        nr_note = n;
+
+        delete[] note;
+        note = m;
+    }
+
+    void display() 
+    {
+        cout << "\nNume: " << name;
+        cout << "\nNr. note: " << nr_note;
+        cout << "\nNote: ";
+        for (int i=0; i < nr_note; i++)
+            cout << note[i] << ' ';
+    }
+};
+
+int main() 
+{
+    char name[30];
+    int no[20], n;
+
+    cout << "Nume: ";
+    cin >> name;
+    cout << "Nr. note: ";
+    cin >> n;
+    cout << "Note: ";
+    for (int i=0; i < n; i++)
+        cin >> no[i];
+
+    Student a(name, no, n);
+    cout << "\nObject a:\n";
+    a.display();
+   
+    cout << "\nObject b:\n";
+    Student b(a);
+    b.display();
+
+    cout << "\nObject c:\n";
+    Student c = b;
+    c.display();
+    return 0;
+}
+﻿/*Definţi o clasă numită Number care are o variabilă private de tip double. Clasa mai conţine un constructor 
+explicit vid și unul cu un parametru şi o metodă accesor care afişează valoarea variabilei din clasă. Scrieţi o 
+clasă numită Mathemathics, care supraîncarcă operatorii specifici operațiilor aritmetice elementare (+, -, *, /).
+Clasa are ca atribut un obiect instanțiat din prima clasa. Operațiile artimetice se efectuează asupra datelor 
+obținute din obiectul de tip Number.*/
+class Number 
+{
+        double a;
+
+public:
+        Number() {}
+        Number(double x) 
+        {
+                a = x; 
+        }
+        double getN() 
+        { 
+                return a; 
+        }
+};
+
+class Mathematics 
+{
+        Number x;
+
+public:
+        int operator+(Number y) 
+        {
+                return x.getN() + x.getN(); 
+        }
+        int operator-(Number y) 
+        { 
+                return x.getN() - x.getN(); 
+        }
+        int operator*(Number y) 
+        {
+                return x.getN() * x.getN(); 
+        }
+        int operator/(Number y) 
+        { 
+                 return x.getN() / x.getN(); 
+        }
+};
+
+/*Consider the Fraction class that has two private integer attributes a and b for the denominator and
+nominator. Use two setter and getter methods for all the class's attributes. Declare a friend function named
+simplify( ) that receives as parameter a Fraction object and returns the corresponding simplified object.
+Consider a private static integer variable icount that will be initialized with 0 and incremented in the
+class's constructors. Define an explicit constructor without parameters that initializes a with 0 and b with
+1 and another explicit constructor with two integer parameters. For this constructor is verified if b!=0
+before to be called. Define an explicit destructor that displays and decrements the value of icount. Define a
+friend function f_add_fraction(...) that returns an object reflecting the sum of the objects received as
+parameters. Implement similar functions for fractions subtraction, multiplication and division. Instantiate
+two Fraction objects and read the appropriate data from the keyboard. Display the initial attributes and the
+ones obtained after simplifying. Call the implemented friend functions and store the results into another
+different four objects. Display the results and the objects counter using the corresponding accesor
+methods.
+gr 2012*/
+#include <iostream>
+using namespace std;
+
+class Fraction
+{
+    int a;
+    int b;
+public:
+    static int icount;
+    Fraction()
+    {
+        cout << "\nConstuctor vid";
+        a = 0;
+        b = 1;
+        icount++;
+    }
+    Fraction(int a, int b)
+    {
+        if (b == 0)
+        {
+            cout << "FRACTIE IMPOSIBILA!";
+            exit(1);
+        }
+        this->a = a;
+        this->b = b;
+        icount++;
+    }
+    ~Fraction()
+    {
+        cout << "\nDESTRUCTOR";
+        icount--;
+    }
+
+    void setA(int a)
+    {
+        this->a = a;
+    }
+    void setB(int b)
+    {
+        if (b == 0)
+        {
+            cout << "FRACTIE IMPOSIBILA!";
+            exit(1);
+        }
+        this->b = b;
+    }
+    int getA()
+    {
+        return a;
+    }
+    int getB()
+    {
+        return b;
+    }
+
+    int CMMDC()
+    {
+        int a1 = a;
+        int b1 = b;
+        int r = a1 % b1;
+        while (r)
+        {
+            a1 = b1;
+            b1 = r;
+            r = a1 % b1;
+        }
+        return b1;
+    }
+    Fraction simplify()
+    {
+        Fraction rez(a, b);
+        int div;
+        do
+        {
+            div = rez.CMMDC();
+            rez.a /= div;
+            rez.b /= div;
+        } while (div != 1);
+        return rez;
+    }
+    friend Fraction add_fraction(Fraction f1, Fraction f2);
+    friend Fraction subtract_fraction(Fraction f1, Fraction f2);
+    friend Fraction multiply_fraction(Fraction f1, Fraction f2);
+    friend Fraction divide_fraction(Fraction f1, Fraction f2);
+};
+
+int Fraction::icount;
+
+Fraction divide_fraction(Fraction f1, Fraction f2)
+{
+    Fraction rez;
+    //multiply with reciprocal
+    rez.b = f1.b * f2.a;
+    rez.a = f1.a * f2.b;
+    return rez;
+}
+Fraction multiply_fraction(Fraction f1, Fraction f2)
+{
+    Fraction rez;
+    rez.b = f1.b * f2.b;
+    rez.a = f1.a * f2.a;
+    return rez;
+
+}
+Fraction subtract_fraction(Fraction f1, Fraction f2)
+{
+    Fraction rez;
+    rez.b = f1.b * f2.b;
+    rez.a = f1.a * f2.b - f2.a * f1.b;
+    return rez;
+}
+Fraction add_fraction(Fraction f1, Fraction f2)
+{
+    Fraction rez;
+    rez.b = f1.b * f2.b;
+    rez.a = f1.a * f2.b + f2.a * f1.b;
+    return rez;
+
+}
+int main()
+{
+    Fraction f1(14, 35);
+    cout << "\nNumar obiecte fractie: " << Fraction::icount;
+
+    cout << '\n' << f1.CMMDC();
+    Fraction f2 = f1.simplify();
+
+    Fraction sum = add_fraction(f1, f2);
+
+
+    cout << '\n' << f1.getA() << '/' << f1.getB();
+    cout << "\n" << f2.getA() << '/' << f2.getB();
+
+    cout << "\nAdunare: " << sum.getA() << '/' << sum.getB();
+    sum = subtract_fraction(f1, f2);
+    cout << "\nScadere: " << sum.getA() << '/' << sum.getB();
+    sum = multiply_fraction(f1, f2);
+    cout << "\nInmultire: " << sum.getA() << '/' << sum.getB();
+    sum = divide_fraction(f1, f2);
+    cout << "\nImpartire: " << sum.getA() << '/' << sum.getB();
+    return 0;
+}
+
+/*Using the same Fraction class, overload the composed arithmetical operators (+=, -=, *=, /=) using
+member functions (methods). Overload the pre-de/incrementation and post-de/incrementation operators that
+will subtract/add the value 1 to an already existent Fraction object. Instantiate 2 Fraction objects and read the
+appropriate data from the keyboard. Copy the objects in other 2 temporary objects. Apply the overloaded
+operators using the copied objects and assign the results to other 4 objects. Display the characteristics of the
+final objects. Display the results obtained after decrementing/incrementing post/prefixed of the final 4 results.*/
+#include <iostream>
+using namespace std;
+
+class Fraction
+{
+    int a;
+    int b;
+public:
+    static int icount;
+    Fraction()
+    {
+        a = 0;
+        b = 1;
+        icount++;
+    }
+    Fraction(int a, int b)
+    {
+        if (b == 0)
+        {
+            cout << "FRACTIE IMPOSIBILA!";
+            exit(1);
+        }
+        this->a = a;
+        this->b = b;
+        icount++;
+    }
+    ~Fraction()
+    {
+        icount--;
+    }
+
+    void setA(int a)
+    {
+        this->a = a;
+    }
+    void setB(int b)
+    {
+        if (b == 0)
+        {
+            cout << "FRACTIE IMPOSIBILA!";
+            exit(1);
+        }
+        this->b = b;
+    }
+    int getA()
+    {
+        return a;
+    }
+    int getB()
+    {
+        return b;
+    }
+
+    int CMMDC()
+    {
+        int a1 = a;
+        int b1 = b;
+        int r = a1 % b1;
+        while (r)
+        {
+            a1 = b1;
+            b1 = r;
+            r = a1 % b1;
+        }
+        return b1;
+    }
+    Fraction simplify()
+    {
+        Fraction rez(a, b);
+        int div;
+        do
+        {
+            div = rez.CMMDC();
+            rez.a /= div;
+            rez.b /= div;
+        } while (div != 1);
+        return rez;
+    }
+    friend Fraction add_fraction(Fraction f1, Fraction f2);
+    friend Fraction subtract_fraction(Fraction f1, Fraction f2);
+    friend Fraction multiply_fraction(Fraction f1, Fraction f2);
+    friend Fraction divide_fraction(Fraction f1, Fraction f2);
+    Fraction operator+=(Fraction x);
+    Fraction operator-=(Fraction x);
+    Fraction operator*=(Fraction x);
+    Fraction operator/=(Fraction x);
+    Fraction operator++(int)
+    {
+        a++;
+        return *this;
+    };
+    Fraction operator--(int)
+    {
+        a--;
+        return *this;
+    };
+    Fraction operator++()
+    {
+        Fraction tmp = *this;
+        a++;
+        return tmp;
+    };
+    Fraction operator--()
+    {
+        Fraction tmp = *this;
+        a--;
+        return tmp;
+    };
+};
+
+int Fraction::icount;
+
+
+Fraction divide_fraction(Fraction f1, Fraction f2)
+{
+    Fraction rez;
+    //multiply with reciprocal
+    rez.b = f1.b * f2.a;
+    rez.a = f1.a * f2.b;
+    return rez;
+}
+Fraction multiply_fraction(Fraction f1, Fraction f2)
+{
+    Fraction rez;
+    rez.b = f1.b * f2.b;
+    rez.a = f1.a * f2.a;
+    return rez;
+
+}
+Fraction subtract_fraction(Fraction f1, Fraction f2)
+{
+    Fraction rez;
+    rez.b = f1.b * f2.b;
+    rez.a = f1.a * f2.b - f2.a * f1.b;
+    return rez;
+}
+Fraction add_fraction(Fraction f1, Fraction f2)
+{
+    Fraction rez;
+    rez.b = f1.b * f2.b;
+    rez.a = f1.a * f2.b + f2.a * f1.b;
+    return rez;
+
+}
+Fraction Fraction::operator+=(Fraction x)
+{
+    return add_fraction(*this, x);
+}
+Fraction Fraction::operator-=(Fraction x)
+{
+    return subtract_fraction(*this, x);
+}
+Fraction Fraction::operator*=(Fraction x)
+{
+    return multiply_fraction(*this, x);
+}
+Fraction Fraction::operator/=(Fraction x)
+{
+    return divide_fraction(*this, x);
+}
+
+int main()
+{
+    Fraction f1(14, 35);
+    cout << "\nNumar obiecte fractie: " << Fraction::icount;
+    Fraction f2 = f1.simplify();
+
+    Fraction sum = add_fraction(f1, f2);
+
+
+    cout << '\n' << f1.getA() << '/' << f1.getB();
+    cout << "\n" << f2.getA() << '/' << f2.getB();
+
+    cout << "\nAdunare: " << sum.getA() << '/' << sum.getB();
+    sum = subtract_fraction(f1, f2);
+    cout << "\nScadere: " << sum.getA() << '/' << sum.getB();
+    sum = multiply_fraction(f1, f2);
+    cout << "\nInmultire: " << sum.getA() << '/' << sum.getB();
+    sum = divide_fraction(f1, f2);
+    cout << "\nImpartire: " << sum.getA() << '/' << sum.getB();
+    sum = f1 += f2;
+    cout << "\nAdunare: " << sum.getA() << '/' << sum.getB();
+    sum = f1 -= f2;
+    cout << "\nScadere: " << sum.getA() << '/' << sum.getB();
+    sum = f1 *= f2;
+    cout << "\nInmultire: " << sum.getA() << '/' << sum.getB();
+    sum = f1 /= f2;
+    cout << "\nImpartire: " << sum.getA() << '/' << sum.getB();
+    f1++;
+    f1++;
+    cout<<"Incrementare fractie 1: "<< f1.getA() << '/' << f1.getB();
+    --f1;
+    cout<<"Incrementare fractie 1:"<< f1.getA() << '/' << f1.getB();
+
+    return 0;
+}
